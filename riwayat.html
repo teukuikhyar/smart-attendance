@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Riwayat - Smart Attendance</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <header class="navbar">
+
+        <div class="nav-container">
+
+            <div class="logo">
+
+                <div class="logo-icon">
+                    ✓
+                </div>
+
+                <div>
+
+                    <h2>
+                        Smart<span>Attendance</span>
+                    </h2>
+
+                    <p>
+                        Digital Attendance System
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <nav class="nav-menu">
+
+                <a href="index.html">
+                    Presensi
+                </a>
+
+                <a
+                    href="riwayat.html"
+                    class="active"
+                >
+                    Riwayat
+                </a>
+
+                <a href="admin.html">
+                    Admin
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- RIWAYAT -->
+
+    <main>
+
+        <section class="history-section">
+
+            <div class="page-heading">
+
+                <div class="hero-badge">
+
+                    <span class="status-dot"></span>
+
+                    Attendance History
+
+                </div>
+
+                <h1>
+                    Riwayat <span>Presensi</span>
+                </h1>
+
+                <p>
+                    Lihat data presensi yang telah dilakukan.
+                </p>
+
+            </div>
+
+
+            <div class="history-card">
+
+
+                <!-- SEARCH -->
+
+                <div class="history-toolbar">
+
+                    <div class="search-box">
+
+                        <span>
+                            🔍
+                        </span>
+
+                        <input
+                            type="text"
+                            id="searchNim"
+                            placeholder="Cari berdasarkan NIM..."
+                        >
+
+                    </div>
+
+
+                    <button
+                        class="btn-secondary"
+                        onclick="loadHistory()"
+                    >
+                        ↻ Refresh
+                    </button>
+
+                </div>
+
+
+                <!-- TABLE -->
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    NIM
+                                </th>
+
+                                <th>
+                                    Nama
+                                </th>
+
+                                <th>
+                                    Mata Kuliah
+                                </th>
+
+                                <th>
+                                    Pertemuan
+                                </th>
+
+                                <th>
+                                    Tanggal
+                                </th>
+
+                                <th>
+                                    Waktu
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="historyTable">
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="empty-table"
+                                >
+
+                                    Belum ada data presensi.
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+
+        <p>
+            © 2026 Smart Attendance
+        </p>
+
+        <span>
+            Attendance History
+        </span>
+
+    </footer>
+
+
+    <script src="js/config.js"></script>
+    <script src="js/riwayat.js"></script>
+
+</body>
+
+</html>
