@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="id">
 
@@ -598,4 +599,606 @@
 
 </body>
 
+=======
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Attendance</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- QR Scanner -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+    <!-- QR Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="nav-container">
+
+            <div class="logo">
+
+                <div class="logo-icon">
+                    ✓
+                </div>
+
+                <div>
+                    <h2>
+                        Smart<span>Attendance</span>
+                    </h2>
+
+                    <p>
+                        Digital Attendance System
+                    </p>
+                </div>
+
+            </div>
+
+            <nav class="nav-menu">
+
+                <a href="index.html" class="active">
+                    Presensi
+                </a>
+
+                <a href="riwayat.html">
+                    Riwayat
+                </a>
+
+                <a href="admin.html">
+                    Admin
+                </a>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main>
+
+        <!-- ================= HERO ================= -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="hero-badge">
+
+                    <span class="status-dot"></span>
+
+                    Sistem Presensi Online
+
+                </div>
+
+
+                <h1>
+                    Presensi Kuliah
+                    <span>Lebih Cepat</span>
+                </h1>
+
+
+                <p>
+                    Lakukan presensi perkuliahan dengan mudah
+                    menggunakan NIM dan QR Code yang tersedia
+                    pada setiap sesi.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= PRESENSI ================= -->
+
+        <section class="attendance-section">
+
+            <div class="attendance-card">
+
+
+                <!-- ================= HEADER ================= -->
+
+                <div class="card-header">
+
+                    <div class="card-icon">
+                        👨‍🎓
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Mulai Presensi
+                        </h2>
+
+                        <p>
+                            Masukkan NIM Anda untuk melanjutkan
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================= STEP INDICATOR ================= -->
+
+                <div class="steps">
+
+                    <div class="step active">
+
+                        <div class="step-number">
+                            1
+                        </div>
+
+                        <span>
+                            Masukkan NIM
+                        </span>
+
+                    </div>
+
+
+                    <div class="step-line"></div>
+
+
+                    <div class="step">
+
+                        <div class="step-number">
+                            2
+                        </div>
+
+                        <span>
+                            Scan QR
+                        </span>
+
+                    </div>
+
+
+                    <div class="step-line"></div>
+
+
+                    <div class="step">
+
+                        <div class="step-number">
+                            3
+                        </div>
+
+                        <span>
+                            Konfirmasi
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- STEP 1 : NIM -->
+                <!-- ================================================= -->
+
+                <div
+                    id="nimSection"
+                    class="form-section"
+                >
+
+                    <label for="nimInput">
+                        Nomor Induk Mahasiswa
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🎓
+                        </span>
+
+
+                        <input
+                            type="text"
+                            id="nimInput"
+                            placeholder="Contoh: 230101001"
+                            autocomplete="off"
+                        >
+
+                    </div>
+
+
+                    <p class="input-help">
+                        Pastikan NIM yang dimasukkan sudah benar.
+                    </p>
+
+
+                    <button
+                        type="button"
+                        id="continueBtn"
+                        class="btn-primary"
+                    >
+
+                        Lanjutkan
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- STEP 2 : SCANNER -->
+                <!-- ================================================= -->
+
+                <div
+                    id="scannerSection"
+                    class="form-section hidden"
+                >
+
+                    <div class="section-title">
+
+                        <div>
+
+                            <h3>
+                                Scan QR Code
+                            </h3>
+
+                            <p>
+                                Arahkan kamera ke QR Code sesi perkuliahan.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- AREA KAMERA -->
+
+                    <div id="reader"></div>
+
+
+                    <button
+                        type="button"
+                        class="btn-secondary"
+                        onclick="resetAttendance()"
+                    >
+
+                        ← Kembali
+
+                    </button>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- STEP 3 : CONFIRMATION -->
+                <!-- ================================================= -->
+
+                <div
+                    id="confirmationSection"
+                    class="form-section hidden"
+                >
+
+                    <div class="success-icon">
+                        ✓
+                    </div>
+
+
+                    <h3 class="center-title">
+                        QR Code Berhasil Dibaca
+                    </h3>
+
+
+                    <p class="center-text">
+                        Periksa data berikut sebelum melakukan presensi.
+                    </p>
+
+
+                    <div class="confirmation-box">
+
+
+                        <!-- NAMA -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Nama
+                            </span>
+
+                            <strong id="confirmName">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <!-- NIM -->
+
+                        <div class="info-row">
+
+                            <span>
+                                NIM
+                            </span>
+
+                            <strong id="confirmNim">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <!-- MATA KULIAH -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Mata Kuliah
+                            </span>
+
+                            <strong id="confirmCourse">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <!-- PERTEMUAN -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Pertemuan
+                            </span>
+
+                            <strong id="confirmMeeting">
+                                -
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TOMBOL PRESENSI -->
+
+                    <button
+                        type="button"
+                        id="submitBtn"
+                        class="btn-primary"
+                    >
+
+                        Presensi Sekarang
+
+                        <span>
+                            ✓
+                        </span>
+
+                    </button>
+
+
+                    <!-- TOMBOL BATAL -->
+
+                    <button
+                        type="button"
+                        id="resetBtn"
+                        class="btn-secondary"
+                    >
+
+                        Batalkan
+
+                    </button>
+
+                </div>
+
+
+                <!-- ================================================= -->
+                <!-- STEP 4 : SUCCESS -->
+                <!-- ================================================= -->
+
+                <div
+                    id="successSection"
+                    class="form-section hidden"
+                >
+
+                    <div class="success-circle">
+                        ✓
+                    </div>
+
+
+                    <h2 class="success-title">
+                        Presensi Berhasil!
+                    </h2>
+
+
+                    <p class="success-text">
+                        Data presensi Anda telah berhasil dicatat.
+                    </p>
+
+
+                    <!-- ================= RECEIPT ================= -->
+
+                    <div class="attendance-receipt">
+
+
+                        <div class="receipt-header">
+
+                            <span>
+                                Status Presensi
+                            </span>
+
+                            <strong class="status-hadir">
+                                HADIR
+                            </strong>
+
+                        </div>
+
+
+                        <div class="receipt-divider"></div>
+
+
+                        <!-- NIM -->
+
+                        <div class="info-row">
+
+                            <span>
+                                NIM
+                            </span>
+
+                            <strong id="successNim">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <!-- NAMA -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Nama
+                            </span>
+
+                            <strong id="successName">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <!-- MATA KULIAH -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Mata Kuliah
+                            </span>
+
+                            <strong id="successCourse">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <!-- PERTEMUAN -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Pertemuan
+                            </span>
+
+                            <strong id="successMeeting">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <!-- TANGGAL -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Tanggal
+                            </span>
+
+                            <strong id="successDate">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <!-- WAKTU -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Waktu
+                            </span>
+
+                            <strong id="successTime">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <!-- SESSION -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Session
+                            </span>
+
+                            <strong id="successSession">
+                                -
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- LIHAT RIWAYAT -->
+
+                    <a
+                        href="riwayat.html"
+                        class="btn-primary button-link"
+                    >
+
+                        Lihat Riwayat
+
+                        <span>
+                            →
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="footer">
+
+        <p>
+            © 2026 Smart Attendance
+        </p>
+
+        <span>
+            Digital Attendance System
+        </span>
+
+    </footer>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script src="js/config.js"></script>
+
+    <script src="js/app.js"></script>
+
+</body>
+
+>>>>>>> 623a37cc2f0697c89a685967b16d9383af84b120
 </html>
