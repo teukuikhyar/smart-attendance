@@ -1,9 +1,7 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -21,15 +19,11 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
     </script>
-
 </head>
-
 
 <body>
 
-
     <!-- NAVBAR -->
-
     <header class="navbar">
 
         <div class="nav-container">
@@ -41,6 +35,7 @@
                 </div>
 
                 <div>
+
                     <h2>
                         Smart<span>Attendance</span>
                     </h2>
@@ -48,10 +43,10 @@
                     <p>
                         Digital Attendance System
                     </p>
+
                 </div>
 
             </div>
-
 
             <nav class="nav-menu">
 
@@ -78,7 +73,6 @@
 
 
     <!-- ADMIN -->
-
     <main>
 
         <section class="admin-section">
@@ -86,8 +80,11 @@
             <div class="page-heading">
 
                 <div class="hero-badge">
+
                     <span class="status-dot"></span>
+
                     Admin Dashboard
+
                 </div>
 
                 <h1>
@@ -105,7 +102,6 @@
 
 
                 <!-- FORM -->
-
                 <div class="admin-card">
 
                     <div class="card-header">
@@ -141,23 +137,23 @@
                                 Pilih Mata Kuliah
                             </option>
 
-                            <option>
+                            <option value="Pemrograman Web">
                                 Pemrograman Web
                             </option>
 
-                            <option>
+                            <option value="Pemrograman Mobile">
                                 Pemrograman Mobile
                             </option>
 
-                            <option>
+                            <option value="Basis Data">
                                 Basis Data
                             </option>
 
-                            <option>
+                            <option value="Sistem Informasi">
                                 Sistem Informasi
                             </option>
 
-                            <option>
+                            <option value="Kecerdasan Buatan">
                                 Kecerdasan Buatan
                             </option>
 
@@ -256,7 +252,6 @@
 
 
                 <!-- QR RESULT -->
-
                 <div class="admin-card qr-card">
 
                     <div class="qr-header">
@@ -347,354 +342,4 @@
 
 </body>
 
-=======
-<!DOCTYPE html>
-<html lang="id">
-
-<head>
-
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Admin - Smart Attendance</title>
-
-    <link
-        rel="stylesheet"
-        href="css/style.css"
-    >
-
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
-    </script>
-
-</head>
-
-
-<body>
-
-
-    <!-- NAVBAR -->
-
-    <header class="navbar">
-
-        <div class="nav-container">
-
-            <div class="logo">
-
-                <div class="logo-icon">
-                    ✓
-                </div>
-
-                <div>
-                    <h2>
-                        Smart<span>Attendance</span>
-                    </h2>
-
-                    <p>
-                        Digital Attendance System
-                    </p>
-                </div>
-
-            </div>
-
-
-            <nav class="nav-menu">
-
-                <a href="index.html">
-                    Presensi
-                </a>
-
-                <a href="riwayat.html">
-                    Riwayat
-                </a>
-
-                <a
-                    href="admin.html"
-                    class="active"
-                >
-                    Admin
-                </a>
-
-            </nav>
-
-        </div>
-
-    </header>
-
-
-    <!-- ADMIN -->
-
-    <main>
-
-        <section class="admin-section">
-
-            <div class="page-heading">
-
-                <div class="hero-badge">
-                    <span class="status-dot"></span>
-                    Admin Dashboard
-                </div>
-
-                <h1>
-                    Kelola Sesi <span>Presensi</span>
-                </h1>
-
-                <p>
-                    Buat QR Code untuk setiap sesi perkuliahan.
-                </p>
-
-            </div>
-
-
-            <div class="admin-grid">
-
-
-                <!-- FORM -->
-
-                <div class="admin-card">
-
-                    <div class="card-header">
-
-                        <div class="card-icon">
-                            ⚙
-                        </div>
-
-                        <div>
-
-                            <h2>
-                                Buat Sesi Presensi
-                            </h2>
-
-                            <p>
-                                Tentukan mata kuliah dan pertemuan.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Mata Kuliah
-                        </label>
-
-                        <select id="course">
-
-                            <option value="">
-                                Pilih Mata Kuliah
-                            </option>
-
-                            <option>
-                                Pemrograman Web
-                            </option>
-
-                            <option>
-                                Pemrograman Mobile
-                            </option>
-
-                            <option>
-                                Basis Data
-                            </option>
-
-                            <option>
-                                Sistem Informasi
-                            </option>
-
-                            <option>
-                                Kecerdasan Buatan
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label>
-                            Pertemuan
-                        </label>
-
-                        <select id="meeting">
-
-                            <option value="">
-                                Pilih Pertemuan
-                            </option>
-
-                            <option value="1">
-                                Pertemuan 1
-                            </option>
-
-                            <option value="2">
-                                Pertemuan 2
-                            </option>
-
-                            <option value="3">
-                                Pertemuan 3
-                            </option>
-
-                            <option value="4">
-                                Pertemuan 4
-                            </option>
-
-                            <option value="5">
-                                Pertemuan 5
-                            </option>
-
-                            <option value="6">
-                                Pertemuan 6
-                            </option>
-
-                            <option value="7">
-                                Pertemuan 7
-                            </option>
-
-                            <option value="8">
-                                Pertemuan 8
-                            </option>
-
-                            <option value="9">
-                                Pertemuan 9
-                            </option>
-
-                            <option value="10">
-                                Pertemuan 10
-                            </option>
-
-                            <option value="11">
-                                Pertemuan 11
-                            </option>
-
-                            <option value="12">
-                                Pertemuan 12
-                            </option>
-
-                            <option value="13">
-                                Pertemuan 13
-                            </option>
-
-                            <option value="14">
-                                Pertemuan 14
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <button
-                        class="btn-primary"
-                        onclick="generateSessionQR()"
-                    >
-
-                        Generate QR Code
-
-                        <span>
-                            →
-                        </span>
-
-                    </button>
-
-                </div>
-
-
-                <!-- QR RESULT -->
-
-                <div class="admin-card qr-card">
-
-                    <div class="qr-header">
-
-                        <span class="qr-status">
-                            ● Sesi Aktif
-                        </span>
-
-                        <h2>
-                            QR Code Presensi
-                        </h2>
-
-                        <p id="qrDescription">
-                            QR Code akan muncul setelah sesi dibuat.
-                        </p>
-
-                    </div>
-
-
-                    <div
-                        id="qrcode"
-                        class="qr-container"
-                    >
-
-                        <div class="qr-placeholder">
-
-                            <div>
-                                ▦
-                            </div>
-
-                            <p>
-                                QR Code belum dibuat
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="session-code-box">
-
-                        <span>
-                            Session Code
-                        </span>
-
-                        <strong id="sessionCode">
-                            -
-                        </strong>
-
-                    </div>
-
-
-                    <button
-                        id="downloadQR"
-                        class="btn-secondary"
-                        onclick="downloadQR()"
-                        disabled
-                    >
-
-                        ↓ Download QR
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <footer class="footer">
-
-        <p>
-            © 2026 Smart Attendance
-        </p>
-
-        <span>
-            Admin Dashboard
-        </span>
-
-    </footer>
-
-
-    <script src="js/config.js"></script>
-    <script src="js/admin.js"></script>
-
-</body>
-
->>>>>>> 623a37cc2f0697c89a685967b16d9383af84b120
 </html>
