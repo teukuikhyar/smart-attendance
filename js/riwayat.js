@@ -1,11 +1,11 @@
-// ==========================================
+// ======================================================
 // SMART ATTENDANCE - RIWAYAT.JS
-// ==========================================
+// ======================================================
 
 
-// ==========================================
+// ======================================================
 // ELEMENT HTML
-// ==========================================
+// ======================================================
 
 const searchNim =
     document.getElementById("searchNim");
@@ -14,16 +14,16 @@ const historyTable =
     document.getElementById("historyTable");
 
 
-// ==========================================
+// ======================================================
 // DATA RIWAYAT
-// ==========================================
+// ======================================================
 
 let attendanceHistory = [];
 
 
-// ==========================================
+// ======================================================
 // LOAD SAAT HALAMAN DIBUKA
-// ==========================================
+// ======================================================
 
 document.addEventListener(
     "DOMContentLoaded",
@@ -34,22 +34,24 @@ document.addEventListener(
         );
 
         loadHistory();
-
     }
 );
 
 
-// ==========================================
+// ======================================================
 // LOAD DATA RIWAYAT
-// ==========================================
+// ======================================================
 
 async function loadHistory() {
 
-    // ======================================
-    // DEMO MODE
-    // ======================================
+    // ==========================================
+    // MODE DEMO
+    // ==========================================
 
-    if (DEMO_MODE) {
+    if (
+        typeof DEMO_MODE !== "undefined" &&
+        DEMO_MODE === true
+    ) {
 
         loadDemoHistory();
 
@@ -57,33 +59,68 @@ async function loadHistory() {
     }
 
 
-    // ======================================
+    // ==========================================
     // MODE ONLINE
-    // ======================================
+    // ==========================================
 
     await loadOnlineHistory();
-
 }
 
 
-// ==========================================
+// ======================================================
 // LOAD DATA DEMO
-// ==========================================
+// ======================================================
 
 function loadDemoHistory() {
 
     try {
 
-        attendanceHistory =
-            JSON.parse(
+        let saved =
+            localStorage.getItem(
+                "attendanceHistory"
+            );
+
+
+        /*
+         * Jika ada data lama dari versi sebelumnya,
+         * ambil juga attendanceData.
+         */
+
+        if (!saved) {
+
+            const oldData =
                 localStorage.getItem(
-                    "attendanceHistory"
-                )
-            ) || [];
+                    "attendanceData"
+                );
 
-    }
+            if (oldData) {
 
-    catch (error) {
+                saved = oldData;
+
+                /*
+                 * Pindahkan data lama ke storage baru.
+                 */
+
+                localStorage.setItem(
+                    "attendanceHistory",
+                    oldData
+                );
+            }
+        }
+
+
+        attendanceHistory =
+            saved
+                ? JSON.parse(saved)
+                : [];
+
+
+        if (!Array.isArray(attendanceHistory)) {
+
+            attendanceHistory = [];
+        }
+
+    } catch (error) {
 
         console.error(
             "Gagal membaca riwayat:",
@@ -91,28 +128,25 @@ function loadDemoHistory() {
         );
 
         attendanceHistory = [];
-
     }
 
 
     displayHistory(
         attendanceHistory
     );
-
 }
 
 
-// ==========================================
-// LOAD DATA DARI GOOGLE SHEETS
-// ==========================================
+// ======================================================
+// LOAD DATA GOOGLE SHEETS
+// ======================================================
 
 async function loadOnlineHistory() {
 
     if (
+        typeof API_URL === "undefined" ||
         !API_URL ||
-        API_URL.includes(
-            "MASUKKAN_URL"
-        )
+        API_URL.includes("MASUKKAN_URL")
     ) {
 
         console.warn(
@@ -164,35 +198,27 @@ async function loadOnlineHistory() {
             attendanceHistory
         );
 
-    }
-
-    catch (error) {
+    } catch (error) {
 
         console.error(
             "Gagal mengambil data:",
             error
         );
 
-
         alert(
             "Tidak dapat mengambil data presensi dari server."
         );
 
-
         displayHistory([]);
-
     }
-
 }
 
 
-// ==========================================
+// ======================================================
 // TAMPILKAN DATA KE TABEL
-// ==========================================
+// ======================================================
 
-function displayHistory(
-    data
-) {
+function displayHistory(data) {
 
     if (!historyTable) {
 
@@ -204,16 +230,16 @@ function displayHistory(
     }
 
 
-    // ======================================
+    // ==========================================
     // KOSONGKAN TABEL
-    // ======================================
+    // ==========================================
 
     historyTable.innerHTML = "";
 
 
-    // ======================================
-    // CEK DATA KOSONG
-    // ======================================
+    // ==========================================
+    // DATA KOSONG
+    // ==========================================
 
     if (
         !data ||
@@ -234,32 +260,24 @@ function displayHistory(
 
         cell.colSpan = 7;
 
-
         cell.className =
             "empty-table";
-
 
         cell.textContent =
             "Belum ada data presensi.";
 
 
-        row.appendChild(
-            cell
-        );
+        row.appendChild(cell);
 
-
-        historyTable.appendChild(
-            row
-        );
-
+        historyTable.appendChild(row);
 
         return;
     }
 
 
-    // ======================================
+    // ==========================================
     // TAMPILKAN DATA
-    // ======================================
+    // ==========================================
 
     data.forEach(
         function (item) {
@@ -381,7 +399,7 @@ function displayHistory(
 
 
             // ==================================
-            // MASUKKAN CELL KE ROW
+            // MASUKKAN CELL
             // ==================================
 
             row.appendChild(
@@ -414,22 +432,20 @@ function displayHistory(
 
 
             // ==================================
-            // MASUKKAN ROW KE TABLE
+            // MASUKKAN ROW
             // ==================================
 
             historyTable.appendChild(
                 row
             );
-
         }
     );
-
 }
 
 
-// ==========================================
+// ======================================================
 // PENCARIAN NIM
-// ==========================================
+// ======================================================
 
 if (searchNim) {
 
@@ -437,13 +453,12 @@ if (searchNim) {
         "input",
         searchHistory
     );
-
 }
 
 
-// ==========================================
-// FUNGSI SEARCH
-// ==========================================
+// ======================================================
+// SEARCH
+// ======================================================
 
 function searchHistory() {
 
@@ -453,9 +468,9 @@ function searchHistory() {
             .toLowerCase();
 
 
-    // ======================================
-    // JIKA PENCARIAN KOSONG
-    // ======================================
+    // ==========================================
+    // KOSONG
+    // ==========================================
 
     if (keyword === "") {
 
@@ -467,9 +482,9 @@ function searchHistory() {
     }
 
 
-    // ======================================
-    // FILTER DATA
-    // ======================================
+    // ==========================================
+    // FILTER
+    // ==========================================
 
     const filtered =
         attendanceHistory.filter(
@@ -478,22 +493,19 @@ function searchHistory() {
                 const nim =
                     String(
                         item.nim || ""
-                    )
-                    .toLowerCase();
+                    ).toLowerCase();
 
 
                 const name =
                     String(
                         item.name || ""
-                    )
-                    .toLowerCase();
+                    ).toLowerCase();
 
 
                 const course =
                     String(
                         item.course || ""
-                    )
-                    .toLowerCase();
+                    ).toLowerCase();
 
 
                 return (
@@ -501,17 +513,15 @@ function searchHistory() {
                     name.includes(keyword) ||
                     course.includes(keyword)
                 );
-
             }
         );
 
 
-    // ======================================
+    // ==========================================
     // TAMPILKAN HASIL
-    // ======================================
+    // ==========================================
 
     displayHistory(
         filtered
     );
-
 }
