@@ -1,10 +1,11 @@
-// ==========================================
+// ======================================================
 // SMART ATTENDANCE - APP.JS
-// ==========================================
+// ======================================================
 
-// ===============================
+
+// ======================================================
 // DATA MAHASISWA DEMO
-// ===============================
+// ======================================================
 
 const students = {
     "230101001": "Teuku Ikhyar",
@@ -14,9 +15,9 @@ const students = {
 };
 
 
-// ===============================
+// ======================================================
 // VARIABEL
-// ===============================
+// ======================================================
 
 let scanner = null;
 let currentStudent = null;
@@ -24,9 +25,9 @@ let currentSession = null;
 let isScanning = false;
 
 
-// ===============================
+// ======================================================
 // ELEMENT HTML
-// ===============================
+// ======================================================
 
 const nimSection = document.getElementById("nimSection");
 const scannerSection = document.getElementById("scannerSection");
@@ -53,42 +54,31 @@ const successTime = document.getElementById("successTime");
 const successSession = document.getElementById("successSession");
 
 
-// ===============================
-// TOMBOL LANJUTKAN
-// ===============================
+// ======================================================
+// EVENT BUTTON
+// ======================================================
 
 if (continueBtn) {
     continueBtn.addEventListener("click", startAttendance);
 }
 
-
-// ===============================
-// TOMBOL PRESENSI
-// ===============================
-
 if (submitBtn) {
     submitBtn.addEventListener("click", submitAttendance);
 }
-
-
-// ===============================
-// TOMBOL BATAL
-// ===============================
 
 if (resetBtn) {
     resetBtn.addEventListener("click", resetAttendance);
 }
 
 
-// ===============================
+// ======================================================
 // MULAI PRESENSI
-// ===============================
+// ======================================================
 
 async function startAttendance() {
 
     const nim = nimInput.value.trim();
 
-    // NIM kosong
     if (nim === "") {
         alert("Silakan masukkan NIM terlebih dahulu.");
         nimInput.focus();
@@ -96,9 +86,9 @@ async function startAttendance() {
     }
 
 
-    // ==========================
+    // ==========================================
     // MODE DEMO
-    // ==========================
+    // ==========================================
 
     if (
         typeof DEMO_MODE !== "undefined" &&
@@ -130,16 +120,15 @@ async function startAttendance() {
             nim: nim,
             name: "Mahasiswa"
         };
-
     }
 
 
     console.log("Mahasiswa:", currentStudent);
 
 
-    // ==========================
+    // ==========================================
     // PINDAH KE SCANNER
-    // ==========================
+    // ==========================================
 
     hideSection(nimSection);
     hideSection(confirmationSection);
@@ -150,16 +139,16 @@ async function startAttendance() {
     updateSteps(2);
 
 
-    // Tunggu sebentar agar scanner terlihat
+    // Beri waktu agar bagian scanner tampil
     setTimeout(() => {
         startScanner();
     }, 300);
 }
 
 
-// ===============================
+// ======================================================
 // START QR SCANNER
-// ===============================
+// ======================================================
 
 async function startScanner() {
 
@@ -170,9 +159,9 @@ async function startScanner() {
         }
 
 
-        // ==========================
+        // ==========================================
         // CEK LIBRARY
-        // ==========================
+        // ==========================================
 
         if (typeof Html5Qrcode === "undefined") {
 
@@ -189,9 +178,25 @@ async function startScanner() {
         }
 
 
-        // ==========================
+        // ==========================================
+        // CEK ELEMENT READER
+        // ==========================================
+
+        const reader = document.getElementById("reader");
+
+        if (!reader) {
+
+            alert(
+                "Area scanner tidak ditemukan."
+            );
+
+            return;
+        }
+
+
+        // ==========================================
         // BERSIHKAN SCANNER LAMA
-        // ==========================
+        // ==========================================
 
         if (scanner) {
 
@@ -211,18 +216,23 @@ async function startScanner() {
         }
 
 
-        // ==========================
+        reader.innerHTML = "";
+
+
+        // ==========================================
         // BUAT SCANNER
-        // ==========================
+        // ==========================================
 
         scanner = new Html5Qrcode("reader");
 
 
-        // ==========================
+        // ==========================================
         // CARI KAMERA
-        // ==========================
+        // ==========================================
 
-        const cameras = await Html5Qrcode.getCameras();
+        const cameras =
+            await Html5Qrcode.getCameras();
+
 
         if (!cameras || cameras.length === 0) {
 
@@ -235,18 +245,22 @@ async function startScanner() {
         }
 
 
-        console.log("Kamera ditemukan:", cameras);
+        console.log(
+            "Kamera ditemukan:",
+            cameras
+        );
 
 
-        // ==========================
+        // ==========================================
         // PILIH KAMERA BELAKANG
-        // ==========================
+        // ==========================================
 
         let selectedCamera = cameras[0];
 
         for (const camera of cameras) {
 
-            const label = (camera.label || "").toLowerCase();
+            const label =
+                (camera.label || "").toLowerCase();
 
             if (
                 label.includes("back") ||
@@ -254,6 +268,7 @@ async function startScanner() {
                 label.includes("environment") ||
                 label.includes("belakang")
             ) {
+
                 selectedCamera = camera;
                 break;
             }
@@ -266,11 +281,11 @@ async function startScanner() {
         );
 
 
-        // ==========================
+        // ==========================================
         // KONFIGURASI SCANNER
-        // ==========================
+        // ==========================================
 
-        const config = {
+        const scannerConfig = {
 
             fps: 10,
 
@@ -279,14 +294,14 @@ async function startScanner() {
                 viewfinderHeight
             ) {
 
-                const minEdge = Math.min(
-                    viewfinderWidth,
-                    viewfinderHeight
-                );
+                const minEdge =
+                    Math.min(
+                        viewfinderWidth,
+                        viewfinderHeight
+                    );
 
-                const size = Math.floor(
-                    minEdge * 0.75
-                );
+                const size =
+                    Math.floor(minEdge * 0.75);
 
                 return {
                     width: size,
@@ -302,15 +317,15 @@ async function startScanner() {
         };
 
 
-        // ==========================
+        // ==========================================
         // MULAI KAMERA
-        // ==========================
+        // ==========================================
 
         await scanner.start(
 
             selectedCamera.id,
 
-            config,
+            scannerConfig,
 
             function(decodedText, decodedResult) {
 
@@ -322,15 +337,17 @@ async function startScanner() {
             },
 
             function(errorMessage) {
-                // Error saat QR belum ditemukan
-                // tidak perlu ditampilkan
+                // QR belum ditemukan.
+                // Tidak perlu menampilkan pesan.
             }
         );
 
 
         isScanning = true;
 
-        console.log("Scanner berhasil dimulai.");
+        console.log(
+            "Scanner berhasil dimulai."
+        );
 
     } catch (error) {
 
@@ -349,9 +366,9 @@ async function startScanner() {
 }
 
 
-// ===============================
+// ======================================================
 // QR BERHASIL DIBACA
-// ===============================
+// ======================================================
 
 async function onScanSuccess(
     decodedText,
@@ -363,7 +380,7 @@ async function onScanSuccess(
     }
 
 
-    // Cegah pembacaan berulang
+    // Mencegah QR terbaca berkali-kali
     isScanning = false;
 
 
@@ -384,15 +401,17 @@ async function onScanSuccess(
 }
 
 
-// ===============================
+// ======================================================
 // PROSES DATA QR
-// ===============================
+// ======================================================
 
 function handleQRCode(decodedText) {
 
     try {
 
-        const qrData = JSON.parse(decodedText);
+        const qrData =
+            JSON.parse(decodedText);
+
 
         console.log(
             "Data QR:",
@@ -400,9 +419,9 @@ function handleQRCode(decodedText) {
         );
 
 
-        // ==========================
+        // ==========================================
         // CEK TYPE
-        // ==========================
+        // ==========================================
 
         if (
             qrData.type !==
@@ -419,9 +438,9 @@ function handleQRCode(decodedText) {
         }
 
 
-        // ==========================
-        // CEK DATA
-        // ==========================
+        // ==========================================
+        // CEK DATA QR
+        // ==========================================
 
         if (
             !qrData.course ||
@@ -439,9 +458,9 @@ function handleQRCode(decodedText) {
         }
 
 
-        // ==========================
+        // ==========================================
         // SIMPAN SESSION
-        // ==========================
+        // ==========================================
 
         currentSession = {
 
@@ -461,9 +480,9 @@ function handleQRCode(decodedText) {
         );
 
 
-        // ==========================
+        // ==========================================
         // TAMPILKAN KONFIRMASI
-        // ==========================
+        // ==========================================
 
         showConfirmation();
 
@@ -483,9 +502,9 @@ function handleQRCode(decodedText) {
 }
 
 
-// ===============================
+// ======================================================
 // KONFIRMASI PRESENSI
-// ===============================
+// ======================================================
 
 function showConfirmation() {
 
@@ -526,9 +545,9 @@ function showConfirmation() {
 }
 
 
-// ===============================
+// ======================================================
 // SIMPAN PRESENSI
-// ===============================
+// ======================================================
 
 async function submitAttendance() {
 
@@ -545,6 +564,10 @@ async function submitAttendance() {
     }
 
 
+    // ==========================================
+    // WAKTU
+    // ==========================================
+
     const now = new Date();
 
     const date =
@@ -553,6 +576,10 @@ async function submitAttendance() {
     const time =
         now.toLocaleTimeString("id-ID");
 
+
+    // ==========================================
+    // DATA PRESENSI
+    // ==========================================
 
     const attendance = {
 
@@ -580,9 +607,9 @@ async function submitAttendance() {
     );
 
 
-    // ==========================
+    // ==========================================
     // MODE DEMO
-    // ==========================
+    // ==========================================
 
     if (
         typeof DEMO_MODE !== "undefined" &&
@@ -613,11 +640,25 @@ async function submitAttendance() {
     }
 
 
-    // ==========================
-    // GOOGLE SHEETS
-    // ==========================
+    // ==========================================
+    // MODE ONLINE
+    // ==========================================
 
     try {
+
+        if (
+            typeof API_URL === "undefined" ||
+            !API_URL ||
+            API_URL.includes("MASUKKAN_URL")
+        ) {
+
+            alert(
+                "API Google Apps Script belum diatur."
+            );
+
+            return;
+        }
+
 
         const response =
             await fetch(
@@ -645,7 +686,8 @@ async function submitAttendance() {
         if (!result.success) {
 
             alert(
-                result.message
+                result.message ||
+                "Presensi gagal disimpan."
             );
 
             return;
@@ -670,27 +712,89 @@ async function submitAttendance() {
 }
 
 
-// ===============================
+// ======================================================
 // SIMPAN DEMO
-// ===============================
+// ======================================================
 
 function saveDemoAttendance(
     attendance
 ) {
 
-    let data =
-        JSON.parse(
-            localStorage.getItem(
-                "attendanceData"
-            )
-        ) || [];
+    let data = [];
 
+
+    try {
+
+        /*
+         * Gunakan attendanceHistory
+         * agar sama dengan riwayat.js.
+         */
+
+        const saved =
+            localStorage.getItem(
+                "attendanceHistory"
+            );
+
+
+        if (saved) {
+
+            data =
+                JSON.parse(saved) || [];
+        }
+
+
+        /*
+         * Jika sebelumnya ada data lama
+         * dengan nama attendanceData,
+         * pindahkan ke attendanceHistory.
+         */
+
+        if (data.length === 0) {
+
+            const oldData =
+                localStorage.getItem(
+                    "attendanceData"
+                );
+
+            if (oldData) {
+
+                try {
+
+                    data =
+                        JSON.parse(
+                            oldData
+                        ) || [];
+
+                } catch (error) {
+
+                    data = [];
+                }
+            }
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Gagal membaca localStorage:",
+            error
+        );
+
+        data = [];
+    }
+
+
+    // ==========================================
+    // CEK DUPLIKAT
+    // ==========================================
 
     const duplicate =
         data.some(
             item =>
-                item.nim === attendance.nim &&
-                item.session === attendance.session
+                String(item.nim) ===
+                String(attendance.nim) &&
+
+                String(item.session) ===
+                String(attendance.session)
         );
 
 
@@ -706,14 +810,28 @@ function saveDemoAttendance(
     }
 
 
+    // ==========================================
+    // TAMBAHKAN DATA
+    // ==========================================
+
     data.push(
         attendance
     );
 
 
+    // ==========================================
+    // SIMPAN
+    // ==========================================
+
     localStorage.setItem(
-        "attendanceData",
+        "attendanceHistory",
         JSON.stringify(data)
+    );
+
+
+    console.log(
+        "Riwayat berhasil disimpan:",
+        data
     );
 
 
@@ -723,9 +841,9 @@ function saveDemoAttendance(
 }
 
 
-// ===============================
+// ======================================================
 // PRESENSI BERHASIL
-// ===============================
+// ======================================================
 
 function showSuccess(
     attendance
@@ -746,18 +864,21 @@ function showSuccess(
 
 
     if (successDate) {
+
         successDate.textContent =
             attendance.date;
     }
 
 
     if (successTime) {
+
         successTime.textContent =
             attendance.time;
     }
 
 
     if (successSession) {
+
         successSession.textContent =
             attendance.session;
     }
@@ -773,9 +894,9 @@ function showSuccess(
 }
 
 
-// ===============================
+// ======================================================
 // STOP SCANNER
-// ===============================
+// ======================================================
 
 async function stopScanner() {
 
@@ -817,13 +938,14 @@ async function stopScanner() {
 }
 
 
-// ===============================
+// ======================================================
 // RESTART SCANNER
-// ===============================
+// ======================================================
 
 async function restartScanner() {
 
     await stopScanner();
+
 
     setTimeout(
         function() {
@@ -836,9 +958,9 @@ async function restartScanner() {
 }
 
 
-// ===============================
-// RESET
-// ===============================
+// ======================================================
+// RESET PRESENSI
+// ======================================================
 
 async function resetAttendance() {
 
@@ -846,10 +968,12 @@ async function resetAttendance() {
 
 
     currentStudent = null;
+
     currentSession = null;
 
 
     if (nimInput) {
+
         nimInput.value = "";
     }
 
@@ -864,9 +988,9 @@ async function resetAttendance() {
 }
 
 
-// ===============================
+// ======================================================
 // SHOW SECTION
-// ===============================
+// ======================================================
 
 function showSection(section) {
 
@@ -879,9 +1003,9 @@ function showSection(section) {
 }
 
 
-// ===============================
+// ======================================================
 // HIDE SECTION
-// ===============================
+// ======================================================
 
 function hideSection(section) {
 
@@ -894,9 +1018,9 @@ function hideSection(section) {
 }
 
 
-// ===============================
+// ======================================================
 // UPDATE STEP
-// ===============================
+// ======================================================
 
 function updateSteps(step) {
 
@@ -926,9 +1050,9 @@ function updateSteps(step) {
 }
 
 
-// ===============================
+// ======================================================
 // ENTER PADA NIM
-// ===============================
+// ======================================================
 
 if (nimInput) {
 
@@ -939,17 +1063,15 @@ if (nimInput) {
             if (event.key === "Enter") {
 
                 startAttendance();
-
             }
-
         }
     );
 }
 
 
-// ===============================
+// ======================================================
 // CEK APLIKASI
-// ===============================
+// ======================================================
 
 console.log(
     "Smart Attendance siap digunakan."
