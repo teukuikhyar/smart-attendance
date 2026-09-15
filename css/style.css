@@ -1126,3 +1126,461 @@ button:disabled {
         font-size: 12px;
     }
 }
+/* =========================================================
+   INDEX PAGE - HERO & ATTENDANCE
+   ========================================================= */
+
+/* =========================
+   HERO
+   ========================= */
+
+.hero {
+    width: 100%;
+    padding: 65px 30px 35px;
+}
+
+.hero-content {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.hero-content .hero-badge {
+    margin-bottom: 22px;
+}
+
+.hero-content h1 {
+    font-size: clamp(42px, 6vw, 68px);
+    line-height: 1.08;
+    letter-spacing: -2px;
+    font-weight: 800;
+    color: #111827;
+}
+
+.hero-content h1 span {
+    color: #2563eb;
+    display: inline-block;
+}
+
+.hero-content p {
+    max-width: 760px;
+    margin: 20px auto 0;
+    color: #64748b;
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+
+/* =========================
+   ATTENDANCE SECTION
+   ========================= */
+
+.attendance-section {
+    width: 100%;
+    padding: 20px 30px 70px;
+}
+
+.attendance-section .attendance-card {
+    max-width: 700px;
+}
+
+
+/* =========================
+   CARD HEADER
+   ========================= */
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 28px;
+}
+
+.card-icon {
+    width: 52px;
+    height: 52px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    background: #eff6ff;
+    font-size: 25px;
+}
+
+.card-header h2 {
+    color: #111827;
+    font-size: 27px;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.card-header p {
+    color: #64748b;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+
+/* =========================
+   FORM SECTION
+   ========================= */
+
+.form-section {
+    width: 100%;
+}
+
+.form-section > label {
+    display: block;
+    margin-bottom: 10px;
+    color: #374151;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+/* =========================
+   INPUT WRAPPER
+   ========================= */
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-icon {
+    position: absolute;
+    left: 17px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 19px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 16px 18px 16px 52px;
+    border: 1px solid #dbe1e8;
+    border-radius: 14px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 16px;
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.input-wrapper input:hover {
+    border-color: #bfdbfe;
+}
+
+.input-wrapper input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.10);
+}
+
+.input-wrapper input::placeholder {
+    color: #94a3b8;
+}
+
+
+/* =========================
+   INPUT HELP
+   ========================= */
+
+.input-help {
+    margin: 9px 0 18px;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* =========================
+   STEP INDICATOR
+   ========================= */
+
+.steps {
+    margin-bottom: 32px;
+}
+
+.step-line {
+    flex-shrink: 0;
+}
+
+
+/* =========================
+   SCANNER SECTION
+   ========================= */
+
+.section-title {
+    margin-bottom: 20px;
+}
+
+.section-title h3 {
+    margin-bottom: 6px;
+    color: #111827;
+    font-size: 23px;
+    font-weight: 800;
+}
+
+.section-title p {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+
+/* =========================
+   CONFIRMATION
+   ========================= */
+
+.center-title {
+    margin-bottom: 8px;
+    text-align: center;
+    color: #111827;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.center-text {
+    margin-bottom: 25px;
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.confirmation-box {
+    margin-bottom: 24px;
+    padding: 5px 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+}
+
+
+/* =========================
+   INFO ROW
+   ========================= */
+
+.info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row span {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.info-row strong {
+    color: #111827;
+    font-size: 14px;
+    text-align: right;
+}
+
+
+/* =========================
+   SUCCESS
+   ========================= */
+
+.success-circle {
+    width: 82px;
+    height: 82px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #dcfce7;
+    color: #16a34a;
+    font-size: 40px;
+    font-weight: 800;
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0.08);
+}
+
+.success-title {
+    text-align: center;
+    color: #111827;
+    font-size: 30px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.success-text {
+    margin-bottom: 25px;
+    text-align: center;
+    color: #64748b;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   ATTENDANCE RECEIPT
+   ========================= */
+
+.attendance-receipt {
+    margin-bottom: 25px;
+    padding: 5px 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    text-align: left;
+}
+
+.receipt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 15px 0;
+}
+
+.receipt-header span {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.receipt-divider {
+    height: 1px;
+    background: #e2e8f0;
+}
+
+
+/* =========================
+   BUTTON LINK
+   ========================= */
+
+.button-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   INDEX PAGE - MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .hero {
+        padding: 45px 15px 25px;
+    }
+
+    .hero-content {
+        max-width: 100%;
+    }
+
+    .hero-content h1 {
+        font-size: 40px;
+        letter-spacing: -1.5px;
+    }
+
+    .hero-content p {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .attendance-section {
+        padding: 15px 15px 45px;
+    }
+
+    .card-header {
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    .card-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
+    }
+
+    .card-header h2 {
+        font-size: 23px;
+    }
+
+    .card-header p {
+        font-size: 14px;
+    }
+
+    .info-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .info-row strong {
+        text-align: left;
+    }
+
+    .confirmation-box,
+    .attendance-receipt {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+}
+
+
+/* =========================================================
+   INDEX PAGE - SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .hero {
+        padding: 35px 12px 20px;
+    }
+
+    .hero-content h1 {
+        font-size: 34px;
+        letter-spacing: -1px;
+    }
+
+    .hero-content p {
+        font-size: 14px;
+    }
+
+    .attendance-section {
+        padding: 10px 12px 35px;
+    }
+
+    .card-header h2 {
+        font-size: 21px;
+    }
+
+    .card-header p {
+        font-size: 13px;
+    }
+
+    .steps {
+        gap: 4px;
+    }
+
+    .step {
+        font-size: 10px;
+    }
+
+    .step-line {
+        width: 20px;
+    }
+
+}
