@@ -1,19 +1,3 @@
-// ==========================================
-// KONFIGURASI SMART ATTENDANCE
-// ==========================================
+const API_URL = "https://script.google.com/macros/s/AKfycbzWWNjij2MPfayamk2oGLChNtOyOSCk3BtTHyUqq9K0bWlNpoKSnaAfgJQXcMlnPnsu/exec";
 
-// Masukkan URL Web App Google Apps Script
-// setelah kita membuat Google Sheets + Apps Script.
-
-const API_URL =
-    "MASUKKAN_URL_GOOGLE_APPS_SCRIPT_DI_SINI";
-
-
-// ==========================================
-// MODE DEMO
-// ==========================================
-
-// true  = menggunakan data demo/localStorage
-// false = menggunakan Google Sheets
-
-const DEMO_MODE = true;
+const DEMO_MODE = false;
