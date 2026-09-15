@@ -2,230 +2,490 @@
 // SMART ATTENDANCE - APP.JS
 // ======================================================
 
-// ------------------------------------------------------
+// ======================================================
 // DATA GLOBAL
-// ------------------------------------------------------
+// ======================================================
 
 let currentStudent = null;
 let currentSession = null;
+
 let html5QrCode = null;
 let isScannerRunning = false;
 
-// Demo data
+
+// ======================================================
+// DATA DEMO
+// ======================================================
+
 const demoStudents = {
+
     "230101001": {
         nim: "230101001",
         name: "Teuku Ikhyar",
         class: "TI-3A"
     },
+
     "230101002": {
         nim: "230101002",
         name: "Muhammad Rizki",
         class: "TI-3A"
     },
+
     "230101003": {
         nim: "230101003",
         name: "Siti Aisyah",
         class: "TI-3A"
     },
+
     "230101004": {
         nim: "230101004",
         name: "Fajar Maulana",
         class: "TI-3A"
     }
+
 };
 
 
 // ======================================================
-// HELPER
+// HELPER ELEMENT
 // ======================================================
 
 function getElement(id) {
+
     return document.getElementById(id);
+
 }
 
 
-// ------------------------------------------------------
+// ======================================================
 // MENAMPILKAN SECTION
-// ------------------------------------------------------
+// ======================================================
 
 function showSection(sectionId) {
+
     const sections = [
+
         "nimSection",
         "scannerSection",
         "confirmationSection",
         "successSection"
+
     ];
 
+
     sections.forEach(id => {
+
         const element = getElement(id);
 
         if (element) {
+
             element.style.display = "none";
+
         }
+
     });
+
 
     const target = getElement(sectionId);
 
+
     if (target) {
+
         target.style.display = "block";
+
     }
+
 }
 
 
 // ======================================================
-// TAMPILAN AWAL
+// SAAT HALAMAN SELESAI DIMUAT
 // ======================================================
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    // Pastikan halaman dimulai dari input NIM
-    showSection("nimSection");
+        showSection("nimSection");
 
-    const nimInput = getElement("nimInput");
 
-    if (nimInput) {
-        nimInput.focus();
+        const nimInput =
+            getElement("nimInput");
 
-        // Bisa menekan Enter untuk melanjutkan
-        nimInput.addEventListener("keypress", function (event) {
 
-            if (event.key === "Enter") {
-                event.preventDefault();
+        if (nimInput) {
 
-                startAttendance();
+            nimInput.focus();
+
+
+            nimInput.addEventListener(
+                "keypress",
+                function (event) {
+
+                    if (event.key === "Enter") {
+
+                        event.preventDefault();
+
+                        startAttendance();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        const continueBtn =
+            getElement("continueBtn");
+
+
+        if (continueBtn) {
+
+            continueBtn.addEventListener(
+                "click",
+                startAttendance
+            );
+
+        }
+
+
+        const submitBtn =
+            getElement("submitBtn");
+
+
+        if (submitBtn) {
+
+            submitBtn.addEventListener(
+                "click",
+                submitAttendance
+            );
+
+        }
+
+
+        const resetBtn =
+            getElement("resetBtn");
+
+
+        if (resetBtn) {
+
+            resetBtn.addEventListener(
+                "click",
+                resetAttendance
+            );
+
+        }
+
+    }
+);
+
+
+// ======================================================
+// JSONP
+// MENGAMBIL DATA MAHASISWA DARI GOOGLE SHEETS
+// ======================================================
+
+function getStudentFromGoogleSheets(nim) {
+
+    return new Promise(
+        (resolve, reject) => {
+
+            const callbackName =
+                "studentCallback_" +
+                Date.now() +
+                "_" +
+                Math.floor(
+                    Math.random() * 1000
+                );
+
+
+            const script =
+                document.createElement(
+                    "script"
+                );
+
+
+            let finished = false;
+
+
+            const timeout =
+                setTimeout(
+                    function () {
+
+                        if (finished) {
+                            return;
+                        }
+
+
+                        finished = true;
+
+                        cleanup();
+
+
+                        reject(
+                            new Error(
+                                "Waktu permintaan data mahasiswa habis."
+                            )
+                        );
+
+                    },
+                    15000
+                );
+
+
+            window[callbackName] =
+                function (result) {
+
+                    if (finished) {
+                        return;
+                    }
+
+
+                    finished = true;
+
+                    clearTimeout(timeout);
+
+                    cleanup();
+
+
+                    resolve(result);
+
+                };
+
+
+            function cleanup() {
+
+                clearTimeout(timeout);
+
+
+                if (
+                    script &&
+                    script.parentNode
+                ) {
+
+                    script.parentNode
+                        .removeChild(script);
+
+                }
+
+
+                try {
+
+                    delete window[
+                        callbackName
+                    ];
+
+                } catch (error) {
+
+                    window[
+                        callbackName
+                    ] = undefined;
+
+                }
+
             }
-        });
-    }
 
-    // Tombol lanjut
-    const continueBtn = getElement("continueBtn");
 
-    if (continueBtn) {
-        continueBtn.addEventListener("click", startAttendance);
-    }
+            script.onerror =
+                function () {
 
-    // Tombol presensi
-    const submitBtn = getElement("submitBtn");
+                    if (finished) {
+                        return;
+                    }
 
-    if (submitBtn) {
-        submitBtn.addEventListener("click", submitAttendance);
-    }
 
-    // Tombol reset
-    const resetBtn = getElement("resetBtn");
+                    finished = true;
 
-    if (resetBtn) {
-        resetBtn.addEventListener("click", resetAttendance);
-    }
-});
+                    clearTimeout(timeout);
+
+                    cleanup();
+
+
+                    reject(
+                        new Error(
+                            "Gagal menghubungi Google Apps Script."
+                        )
+                    );
+
+                };
+
+
+            script.src =
+                API_URL +
+                "?action=student" +
+                "&nim=" +
+                encodeURIComponent(nim) +
+                "&callback=" +
+                encodeURIComponent(
+                    callbackName
+                );
+
+
+            console.log(
+                "Meminta data mahasiswa:",
+                script.src
+            );
+
+
+            document.body.appendChild(
+                script
+            );
+
+        }
+    );
+
+}
 
 
 // ======================================================
-// STEP 1 - INPUT NIM
+// STEP 1
+// MEMERIKSA NIM
 // ======================================================
 
 async function startAttendance() {
 
-    const nimInput = getElement("nimInput");
+    const nimInput =
+        getElement("nimInput");
+
 
     if (!nimInput) {
-        alert("Input NIM tidak ditemukan.");
+
+        alert(
+            "Input NIM tidak ditemukan."
+        );
+
         return;
+
     }
 
-    const nim = nimInput.value.trim();
 
-    // Validasi NIM
-    if (nim === "") {
-        alert("Silakan masukkan NIM terlebih dahulu.");
+    const nim =
+        nimInput.value.trim();
+
+
+    // --------------------------------------------------
+    // VALIDASI NIM
+    // --------------------------------------------------
+
+    if (!nim) {
+
+        alert(
+            "Silakan masukkan NIM terlebih dahulu."
+        );
+
         nimInput.focus();
+
         return;
+
     }
+
 
     // --------------------------------------------------
     // MODE DEMO
     // --------------------------------------------------
 
-    if (typeof DEMO_MODE !== "undefined" && DEMO_MODE === true) {
+    if (
+        typeof DEMO_MODE !== "undefined" &&
+        DEMO_MODE === true
+    ) {
 
-        const student = demoStudents[nim];
+        const student =
+            demoStudents[nim];
+
 
         if (!student) {
-            alert("NIM tidak ditemukan pada data demo.");
+
+            alert(
+                "NIM tidak ditemukan pada data demo."
+            );
+
             return;
+
         }
 
+
         currentStudent = {
-            nim: student.nim,
-            name: student.name,
-            class: student.class
+
+            nim:
+                student.nim,
+
+            name:
+                student.name,
+
+            class:
+                student.class
+
         };
 
-        console.log("Mahasiswa Demo:", currentStudent);
+
+        console.log(
+            "Mahasiswa Demo:",
+            currentStudent
+        );
+
 
         showScanner();
 
+
         return;
+
     }
 
 
     // --------------------------------------------------
-    // MODE ONLINE
+    // VALIDASI API
     // --------------------------------------------------
 
-    if (typeof API_URL === "undefined" || !API_URL) {
+    if (
+        typeof API_URL === "undefined" ||
+        !API_URL
+    ) {
 
         alert(
-            "API_URL belum dikonfigurasi.\n" +
+            "API_URL belum dikonfigurasi.\n\n" +
             "Periksa file js/config.js."
         );
 
         return;
+
     }
 
 
-    // Tampilkan loading
-    const continueBtn = getElement("continueBtn");
+    const continueBtn =
+        getElement("continueBtn");
+
 
     if (continueBtn) {
+
         continueBtn.disabled = true;
-        continueBtn.innerText = "Memeriksa...";
+
+        continueBtn.innerText =
+            "Memeriksa...";
+
     }
 
 
     try {
 
-        // URL untuk mencari mahasiswa
-        const url =
-            API_URL +
-            "?action=student&nim=" +
-            encodeURIComponent(nim);
+        // ------------------------------------------------
+        // AMBIL DATA MAHASISWA
+        // ------------------------------------------------
 
-        console.log("Meminta data mahasiswa:", url);
-
-
-        const response = await fetch(url, {
-            method: "GET"
-        });
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Server mengembalikan status " +
-                response.status
+        const result =
+            await getStudentFromGoogleSheets(
+                nim
             );
-        }
 
 
-        const result = await response.json();
-
-        console.log("Response mahasiswa:", result);
+        console.log(
+            "Response mahasiswa:",
+            result
+        );
 
 
         // ------------------------------------------------
-        // CEK RESPONSE
+        // CEK DATA
         // ------------------------------------------------
 
         if (
@@ -235,9 +495,18 @@ async function startAttendance() {
         ) {
 
             currentStudent = {
-                nim: result.data.nim || nim,
-                name: result.data.name || "Mahasiswa",
-                class: result.data.class || ""
+
+                nim:
+                    result.data.nim || nim,
+
+                name:
+                    result.data.name ||
+                    "Mahasiswa",
+
+                class:
+                    result.data.class ||
+                    ""
+
             };
 
 
@@ -250,14 +519,18 @@ async function startAttendance() {
             // Lanjut ke scanner
             showScanner();
 
+
         } else {
 
             const message =
-                result && result.message
+                result &&
+                result.message
                     ? result.message
                     : "NIM tidak ditemukan di Google Sheets.";
 
+
             alert(message);
+
         }
 
 
@@ -268,6 +541,7 @@ async function startAttendance() {
             error
         );
 
+
         alert(
             "Gagal mengambil data mahasiswa dari Google Sheets.\n\n" +
             "Pastikan:\n" +
@@ -275,26 +549,33 @@ async function startAttendance() {
             "2. Web App Apps Script sudah dideploy.\n" +
             "3. Akses Web App diset ke Anyone.\n" +
             "4. Koneksi internet aktif.\n\n" +
-            "Detail: " + error.message
+            "Detail: " +
+            error.message
         );
 
     } finally {
 
         if (continueBtn) {
+
             continueBtn.disabled = false;
-            continueBtn.innerText = "Lanjutkan";
+
+            continueBtn.innerText =
+                "Lanjutkan";
+
         }
+
     }
+
 }
 
 
 // ======================================================
-// STEP 2 - SCANNER
+// STEP 2
+// MENAMPILKAN SCANNER
 // ======================================================
 
 async function showScanner() {
 
-    // Pastikan mahasiswa sudah ada
     if (!currentStudent) {
 
         alert(
@@ -302,54 +583,76 @@ async function showScanner() {
         );
 
         return;
+
     }
 
 
-    // Tampilkan identitas mahasiswa jika elemen tersedia
     updateStudentInformation();
 
 
-    // Tampilkan scanner
-    showSection("scannerSection");
+    showSection(
+        "scannerSection"
+    );
 
 
-    // Mulai scanner
     await startScanner();
-}
 
-
-// ------------------------------------------------------
-// UPDATE INFORMASI MAHASISWA
-// ------------------------------------------------------
-
-function updateStudentInformation() {
-
-    // Beberapa desain mungkin memiliki elemen ini
-    const studentName = getElement("studentName");
-    const studentNim = getElement("studentNim");
-    const studentClass = getElement("studentClass");
-
-    if (studentName) {
-        studentName.innerText = currentStudent.name;
-    }
-
-    if (studentNim) {
-        studentNim.innerText = currentStudent.nim;
-    }
-
-    if (studentClass) {
-        studentClass.innerText = currentStudent.class || "-";
-    }
 }
 
 
 // ======================================================
-// MEMULAI KAMERA QR
+// UPDATE INFORMASI MAHASISWA
+// ======================================================
+
+function updateStudentInformation() {
+
+    const studentName =
+        getElement("studentName");
+
+
+    const studentNim =
+        getElement("studentNim");
+
+
+    const studentClass =
+        getElement("studentClass");
+
+
+    if (studentName) {
+
+        studentName.innerText =
+            currentStudent.name;
+
+    }
+
+
+    if (studentNim) {
+
+        studentNim.innerText =
+            currentStudent.nim;
+
+    }
+
+
+    if (studentClass) {
+
+        studentClass.innerText =
+            currentStudent.class || "-";
+
+    }
+
+}
+
+
+// ======================================================
+// MEMULAI SCANNER
 // ======================================================
 
 async function startScanner() {
 
-    const reader = getElement("reader");
+    const reader =
+        getElement("reader");
+
 
     if (!reader) {
 
@@ -358,55 +661,103 @@ async function startScanner() {
         );
 
         return;
+
     }
 
 
-    // Bersihkan tampilan reader
     reader.innerHTML = "";
 
 
-    // Jika scanner sebelumnya masih berjalan
-    if (html5QrCode && isScannerRunning) {
+    // --------------------------------------------------
+    // HENTIKAN SCANNER LAMA
+    // --------------------------------------------------
+
+    if (
+        html5QrCode &&
+        isScannerRunning
+    ) {
 
         try {
+
             await stopScanner();
+
         } catch (error) {
+
             console.warn(
                 "Gagal menghentikan scanner lama:",
                 error
             );
+
         }
+
+    }
+
+
+    // --------------------------------------------------
+    // CEK LIBRARY
+    // --------------------------------------------------
+
+    if (
+        typeof Html5Qrcode ===
+        "undefined"
+    ) {
+
+        alert(
+            "Library QR Scanner belum tersedia."
+        );
+
+        return;
+
     }
 
 
     try {
 
-        html5QrCode = new Html5Qrcode("reader");
+        html5QrCode =
+            new Html5Qrcode(
+                "reader"
+            );
 
 
         const config = {
+
             fps: 10,
+
             qrbox: {
+
                 width: 250,
                 height: 250
+
             },
+
             aspectRatio: 1.0
+
         };
 
 
         await html5QrCode.start(
+
             {
-                facingMode: "environment"
+                facingMode:
+                    "environment"
             },
+
             config,
+
             onScanSuccess,
+
             onScanError
+
         );
 
 
         isScannerRunning = true;
 
-        console.log("Scanner berhasil dimulai.");
+
+        console.log(
+            "Scanner berhasil dimulai."
+        );
+
 
     } catch (error) {
 
@@ -417,10 +768,12 @@ async function startScanner() {
 
 
         reader.innerHTML = `
+
             <div style="
                 padding:20px;
                 text-align:center;
             ">
+
                 <p>
                     Kamera tidak dapat digunakan.
                 </p>
@@ -429,10 +782,14 @@ async function startScanner() {
                     font-size:14px;
                     color:#666;
                 ">
-                    Pastikan browser memiliki izin
-                    menggunakan kamera.
+
+                    Pastikan browser memiliki
+                    izin menggunakan kamera.
+
                 </p>
+
             </div>
+
         `;
 
 
@@ -440,15 +797,20 @@ async function startScanner() {
             "Kamera tidak dapat digunakan.\n\n" +
             "Pastikan izin kamera sudah diberikan kepada browser."
         );
+
     }
+
 }
 
 
-// ------------------------------------------------------
-// CALLBACK SCAN BERHASIL
-// ------------------------------------------------------
+// ======================================================
+// SCAN BERHASIL
+// ======================================================
 
-function onScanSuccess(decodedText, decodedResult) {
+function onScanSuccess(
+    decodedText,
+    decodedResult
+) {
 
     console.log(
         "QR berhasil dibaca:",
@@ -456,23 +818,27 @@ function onScanSuccess(decodedText, decodedResult) {
     );
 
 
-    // Hentikan scanner supaya tidak membaca QR berkali-kali
     stopScanner();
 
 
-    // Proses isi QR
-    processQRCode(decodedText);
+    processQRCode(
+        decodedText
+    );
+
 }
 
 
-// ------------------------------------------------------
-// CALLBACK ERROR SCAN
-// ------------------------------------------------------
+// ======================================================
+// SCAN ERROR
+// ======================================================
 
-function onScanError(errorMessage) {
+function onScanError(
+    errorMessage
+) {
 
-    // Error ini normal ketika kamera belum menemukan QR.
-    // Tidak perlu ditampilkan kepada user.
+    // Tidak perlu menampilkan error
+    // karena callback ini terus berjalan
+    // selama kamera mencari QR.
 
 }
 
@@ -483,8 +849,13 @@ function onScanError(errorMessage) {
 
 async function stopScanner() {
 
-    if (!html5QrCode || !isScannerRunning) {
+    if (
+        !html5QrCode ||
+        !isScannerRunning
+    ) {
+
         return;
+
     }
 
 
@@ -492,9 +863,14 @@ async function stopScanner() {
 
         await html5QrCode.stop();
 
+
         isScannerRunning = false;
 
-        console.log("Scanner dihentikan.");
+
+        console.log(
+            "Scanner dihentikan."
+        );
+
 
     } catch (error) {
 
@@ -503,8 +879,11 @@ async function stopScanner() {
             error
         );
 
+
         isScannerRunning = false;
+
     }
+
 }
 
 
@@ -512,18 +891,23 @@ async function stopScanner() {
 // MEMPROSES QR CODE
 // ======================================================
 
-function processQRCode(decodedText) {
+function processQRCode(
+    decodedText
+) {
 
     let qrData;
 
 
     // --------------------------------------------------
-    // Ubah QR menjadi JSON
+    // PARSE JSON
     // --------------------------------------------------
 
     try {
 
-        qrData = JSON.parse(decodedText);
+        qrData =
+            JSON.parse(
+                decodedText
+            );
 
     } catch (error) {
 
@@ -532,14 +916,18 @@ function processQRCode(decodedText) {
             error
         );
 
+
         alert(
             "QR Code tidak valid.\n\n" +
             "Silakan scan QR sesi yang dibuat oleh admin."
         );
 
+
         restartScanner();
 
+
         return;
+
     }
 
 
@@ -555,21 +943,25 @@ function processQRCode(decodedText) {
 
     if (
         !qrData ||
-        qrData.type !== "SMART_ATTENDANCE"
+        qrData.type !==
+        "SMART_ATTENDANCE"
     ) {
 
         alert(
             "QR Code bukan QR Smart Attendance."
         );
 
+
         restartScanner();
 
+
         return;
+
     }
 
 
     // --------------------------------------------------
-    // VALIDASI COURSE
+    // VALIDASI MATA KULIAH
     // --------------------------------------------------
 
     if (!qrData.course) {
@@ -578,9 +970,12 @@ function processQRCode(decodedText) {
             "Data mata kuliah pada QR tidak ditemukan."
         );
 
+
         restartScanner();
 
+
         return;
+
     }
 
 
@@ -594,9 +989,12 @@ function processQRCode(decodedText) {
             "Data pertemuan pada QR tidak ditemukan."
         );
 
+
         restartScanner();
 
+
         return;
+
     }
 
 
@@ -610,21 +1008,33 @@ function processQRCode(decodedText) {
             "Kode sesi pada QR tidak ditemukan."
         );
 
+
         restartScanner();
 
+
         return;
+
     }
 
 
     // --------------------------------------------------
-    // SIMPAN DATA SESI
+    // SIMPAN SESI
     // --------------------------------------------------
 
     currentSession = {
-        type: qrData.type,
-        course: qrData.course,
-        meeting: qrData.meeting,
-        session: qrData.session
+
+        type:
+            qrData.type,
+
+        course:
+            qrData.course,
+
+        meeting:
+            qrData.meeting,
+
+        session:
+            qrData.session
+
     };
 
 
@@ -636,6 +1046,7 @@ function processQRCode(decodedText) {
 
     // Tampilkan konfirmasi
     showConfirmation();
+
 }
 
 
@@ -645,18 +1056,25 @@ function processQRCode(decodedText) {
 
 async function restartScanner() {
 
-    const reader = getElement("reader");
+    const reader =
+        getElement("reader");
+
 
     if (reader) {
+
         reader.innerHTML = "";
+
     }
 
+
     await startScanner();
+
 }
 
 
 // ======================================================
-// STEP 3 - KONFIRMASI
+// STEP 3
+// KONFIRMASI PRESENSI
 // ======================================================
 
 function showConfirmation() {
@@ -668,6 +1086,7 @@ function showConfirmation() {
         );
 
         return;
+
     }
 
 
@@ -678,6 +1097,7 @@ function showConfirmation() {
         );
 
         return;
+
     }
 
 
@@ -685,11 +1105,15 @@ function showConfirmation() {
     // NAMA
     // --------------------------------------------------
 
-    const confirmName = getElement("confirmName");
+    const confirmName =
+        getElement("confirmName");
+
 
     if (confirmName) {
+
         confirmName.innerText =
             currentStudent.name;
+
     }
 
 
@@ -697,11 +1121,15 @@ function showConfirmation() {
     // NIM
     // --------------------------------------------------
 
-    const confirmNim = getElement("confirmNim");
+    const confirmNim =
+        getElement("confirmNim");
+
 
     if (confirmNim) {
+
         confirmNim.innerText =
             currentStudent.nim;
+
     }
 
 
@@ -709,11 +1137,15 @@ function showConfirmation() {
     // MATA KULIAH
     // --------------------------------------------------
 
-    const confirmCourse = getElement("confirmCourse");
+    const confirmCourse =
+        getElement("confirmCourse");
+
 
     if (confirmCourse) {
+
         confirmCourse.innerText =
             currentSession.course;
+
     }
 
 
@@ -721,22 +1153,29 @@ function showConfirmation() {
     // PERTEMUAN
     // --------------------------------------------------
 
-    const confirmMeeting = getElement("confirmMeeting");
+    const confirmMeeting =
+        getElement("confirmMeeting");
+
 
     if (confirmMeeting) {
+
         confirmMeeting.innerText =
             "Pertemuan " +
             currentSession.meeting;
+
     }
 
 
-    // Tampilkan halaman konfirmasi
-    showSection("confirmationSection");
+    showSection(
+        "confirmationSection"
+    );
+
 }
 
 
 // ======================================================
-// STEP 4 - SIMPAN PRESENSI
+// STEP 4
+// SIMPAN PRESENSI
 // ======================================================
 
 async function submitAttendance() {
@@ -752,6 +1191,7 @@ async function submitAttendance() {
         );
 
         return;
+
     }
 
 
@@ -762,16 +1202,21 @@ async function submitAttendance() {
         );
 
         return;
+
     }
 
 
-    const submitBtn = getElement("submitBtn");
+    const submitBtn =
+        getElement("submitBtn");
 
 
     if (submitBtn) {
 
         submitBtn.disabled = true;
-        submitBtn.innerText = "Menyimpan...";
+
+        submitBtn.innerText =
+            "Menyimpan...";
+
     }
 
 
@@ -787,6 +1232,7 @@ async function submitAttendance() {
         saveDemoAttendance();
 
         return;
+
     }
 
 
@@ -798,17 +1244,24 @@ async function submitAttendance() {
 
         const attendance = {
 
-            nim: currentStudent.nim,
+            nim:
+                currentStudent.nim,
 
-            name: currentStudent.name,
+            name:
+                currentStudent.name,
 
-            course: currentSession.course,
+            course:
+                currentSession.course,
 
-            meeting: currentSession.meeting,
+            meeting:
+                currentSession.meeting,
 
-            session: currentSession.session,
+            session:
+                currentSession.session,
 
-            status: "Hadir"
+            status:
+                "Hadir"
+
         };
 
 
@@ -819,23 +1272,31 @@ async function submitAttendance() {
 
 
         /*
-         * Menggunakan no-cors.
+         * POST menggunakan no-cors.
          *
-         * Google Apps Script Web App dapat menerima
-         * POST dari GitHub Pages tanpa preflight.
+         * Google Apps Script akan menerima
+         * data JSON dari website.
          *
-         * Karena no-cors menghasilkan response opaque,
-         * kita tidak dapat membaca response JSON dari Apps Script.
+         * Karena no-cors menghasilkan response
+         * opaque, response dari Apps Script
+         * tidak dapat dibaca oleh browser.
          */
 
-        await fetch(API_URL, {
+        await fetch(
+            API_URL,
+            {
 
-            method: "POST",
+                method: "POST",
 
-            mode: "no-cors",
+                mode: "no-cors",
 
-            body: JSON.stringify(attendance)
-        });
+                body:
+                    JSON.stringify(
+                        attendance
+                    )
+
+            }
+        );
 
 
         console.log(
@@ -843,7 +1304,6 @@ async function submitAttendance() {
         );
 
 
-        // Tampilkan berhasil
         showSuccess();
 
 
@@ -866,34 +1326,43 @@ async function submitAttendance() {
         if (submitBtn) {
 
             submitBtn.disabled = false;
+
             submitBtn.innerText =
                 "Presensi Sekarang";
+
         }
+
     }
+
 }
 
 
 // ======================================================
-// DEMO ATTENDANCE
+// DEMO - SIMPAN PRESENSI
 // ======================================================
 
 function saveDemoAttendance() {
 
-    const now = new Date();
+    const now =
+        new Date();
 
 
-    const date = now.toLocaleDateString(
-        "id-ID"
-    );
+    const date =
+        now.toLocaleDateString(
+            "id-ID"
+        );
 
 
-    const time = now.toLocaleTimeString(
-        "id-ID",
-        {
-            hour: "2-digit",
-            minute: "2-digit"
-        }
-    );
+    const time =
+        now.toLocaleTimeString(
+            "id-ID",
+            {
+
+                hour: "2-digit",
+                minute: "2-digit"
+
+            }
+        );
 
 
     const attendance = {
@@ -925,10 +1394,10 @@ function saveDemoAttendance() {
 
         status:
             "Hadir"
+
     };
 
 
-    // Ambil data lama
     let history =
         JSON.parse(
             localStorage.getItem(
@@ -937,38 +1406,49 @@ function saveDemoAttendance() {
         );
 
 
-    // Cek duplicate
+    // --------------------------------------------------
+    // CEK DUPLIKAT
+    // --------------------------------------------------
+
     const duplicate =
-        history.some(item =>
-            item.nim === attendance.nim &&
-            item.session === attendance.session
+        history.some(
+            item =>
+                item.nim ===
+                    attendance.nim &&
+                item.session ===
+                    attendance.session
         );
 
 
     if (duplicate) {
 
         alert(
-            "Anda sudah melakukan presensi " +
-            "pada sesi ini."
+            "Anda sudah melakukan presensi pada sesi ini."
         );
 
 
         const submitBtn =
             getElement("submitBtn");
 
+
         if (submitBtn) {
 
             submitBtn.disabled = false;
+
             submitBtn.innerText =
                 "Presensi Sekarang";
+
         }
 
+
         return;
+
     }
 
 
-    // Simpan
-    history.push(attendance);
+    history.push(
+        attendance
+    );
 
 
     localStorage.setItem(
@@ -978,30 +1458,40 @@ function saveDemoAttendance() {
 
 
     showSuccess();
+
 }
 
 
 // ======================================================
-// STEP 5 - BERHASIL
+// STEP 5
+// HALAMAN BERHASIL
 // ======================================================
 
 function showSuccess() {
 
-    if (!currentStudent || !currentSession) {
+    if (
+        !currentStudent ||
+        !currentSession
+    ) {
+
         return;
+
     }
 
 
-    const now = new Date();
+    const now =
+        new Date();
 
 
     const date =
         now.toLocaleDateString(
             "id-ID",
             {
+
                 day: "2-digit",
                 month: "2-digit",
                 year: "numeric"
+
             }
         );
 
@@ -1010,9 +1500,11 @@ function showSuccess() {
         now.toLocaleTimeString(
             "id-ID",
             {
+
                 hour: "2-digit",
                 minute: "2-digit",
                 second: "2-digit"
+
             }
         );
 
@@ -1024,10 +1516,12 @@ function showSuccess() {
     const successNim =
         getElement("successNim");
 
+
     if (successNim) {
 
         successNim.innerText =
             currentStudent.nim;
+
     }
 
 
@@ -1038,10 +1532,12 @@ function showSuccess() {
     const successName =
         getElement("successName");
 
+
     if (successName) {
 
         successName.innerText =
             currentStudent.name;
+
     }
 
 
@@ -1052,10 +1548,12 @@ function showSuccess() {
     const successCourse =
         getElement("successCourse");
 
+
     if (successCourse) {
 
         successCourse.innerText =
             currentSession.course;
+
     }
 
 
@@ -1066,11 +1564,13 @@ function showSuccess() {
     const successMeeting =
         getElement("successMeeting");
 
+
     if (successMeeting) {
 
         successMeeting.innerText =
             "Pertemuan " +
             currentSession.meeting;
+
     }
 
 
@@ -1081,10 +1581,12 @@ function showSuccess() {
     const successDate =
         getElement("successDate");
 
+
     if (successDate) {
 
         successDate.innerText =
             date;
+
     }
 
 
@@ -1095,10 +1597,12 @@ function showSuccess() {
     const successTime =
         getElement("successTime");
 
+
     if (successTime) {
 
         successTime.innerText =
             time;
+
     }
 
 
@@ -1109,74 +1613,98 @@ function showSuccess() {
     const successSession =
         getElement("successSession");
 
+
     if (successSession) {
 
         successSession.innerText =
             currentSession.session;
+
     }
 
 
-    // Tampilkan halaman berhasil
-    showSection("successSection");
+    // --------------------------------------------------
+    // TAMPILKAN SUCCESS
+    // --------------------------------------------------
+
+    showSection(
+        "successSection"
+    );
+
 }
 
 
 // ======================================================
-// RESET PRESENSI
+// RESET
 // ======================================================
 
 async function resetAttendance() {
 
-    // Hentikan scanner jika masih berjalan
     await stopScanner();
 
 
-    // Reset data
     currentStudent = null;
+
     currentSession = null;
 
 
-    // Kosongkan input NIM
     const nimInput =
         getElement("nimInput");
+
 
     if (nimInput) {
 
         nimInput.value = "";
+
     }
 
 
-    // Reset tombol submit
     const submitBtn =
         getElement("submitBtn");
+
 
     if (submitBtn) {
 
         submitBtn.disabled = false;
+
         submitBtn.innerText =
             "Presensi Sekarang";
+
     }
 
 
-    // Tampilkan halaman awal
-    showSection("nimSection");
+    showSection(
+        "nimSection"
+    );
 
 
-    // Fokus input
     if (nimInput) {
 
         nimInput.focus();
+
     }
+
 }
 
 
 // ======================================================
-// EXPORT / GLOBAL FUNCTION
+// GLOBAL FUNCTIONS
 // ======================================================
 
-// Supaya fungsi bisa dipanggil langsung dari HTML
-window.startAttendance = startAttendance;
-window.submitAttendance = submitAttendance;
-window.resetAttendance = resetAttendance;
-window.showConfirmation = showConfirmation;
-window.processQRCode = processQRCode;
+window.startAttendance =
+    startAttendance;
+
+
+window.submitAttendance =
+    submitAttendance;
+
+
+window.resetAttendance =
+    resetAttendance;
+
+
+window.showConfirmation =
+    showConfirmation;
+
+
+window.processQRCode =
+    processQRCode;
