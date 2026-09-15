@@ -53,13 +53,13 @@ button {
     position: sticky;
     top: 0;
     z-index: 1000;
+    backdrop-filter: blur(10px);
 }
 
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 18px 30px;
-
+    padding: 16px 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -73,31 +73,27 @@ button {
 }
 
 .logo-icon {
-    width: 58px;
-    height: 58px;
-
+    width: 56px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 16px;
-
-    background: linear-gradient(
-        135deg,
-        #3b82f6,
-        #2563eb
-    );
-
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: white;
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 700;
+    box-shadow: 0 8px 22px rgba(37, 99, 235, 0.22);
+    transition: transform 0.25s ease;
+}
 
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.22);
+.logo:hover .logo-icon {
+    transform: translateY(-2px) rotate(-2deg);
 }
 
 .logo h2 {
     font-size: 20px;
-    font-weight: 700;
+    font-weight: 800;
     color: #111827;
 }
 
@@ -108,29 +104,31 @@ button {
 .logo p {
     margin-top: 3px;
     font-size: 11px;
-    color: #6b7280;
+    color: #64748b;
 }
 
 .nav-menu {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .nav-menu a {
-    padding: 12px 16px;
-    border-radius: 14px;
-
+    padding: 11px 15px;
+    border-radius: 12px;
     color: #64748b;
-    font-size: 16px;
-    font-weight: 600;
-
-    transition: all 0.25s ease;
+    font-size: 15px;
+    font-weight: 700;
+    transition:
+        color 0.25s ease,
+        background 0.25s ease,
+        transform 0.25s ease;
 }
 
 .nav-menu a:hover {
     color: #2563eb;
     background: #eff6ff;
+    transform: translateY(-1px);
 }
 
 .nav-menu a.active {
@@ -163,40 +161,36 @@ main {
 
 .page-heading {
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 48px;
 }
 
 .hero-badge {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-
-    padding: 11px 18px;
-    border-radius: 30px;
-
+    gap: 9px;
+    padding: 10px 17px;
+    border-radius: 999px;
     background: #eff6ff;
     color: #2563eb;
-
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
-
-    margin-bottom: 24px;
+    margin-bottom: 22px;
+    border: 1px solid #dbeafe;
 }
 
 .status-dot {
-    width: 12px;
-    height: 12px;
-
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: #22c55e;
-
     display: inline-block;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
 }
 
 .page-heading h1 {
-    font-size: clamp(42px, 6vw, 72px);
+    font-size: clamp(42px, 6vw, 70px);
     line-height: 1.05;
-    letter-spacing: -2px;
+    letter-spacing: -2.5px;
     font-weight: 800;
     color: #111827;
 }
@@ -206,11 +200,11 @@ main {
 }
 
 .page-heading p {
-    margin-top: 22px;
-
+    max-width: 700px;
+    margin: 20px auto 0;
     color: #64748b;
-    font-size: 19px;
-    line-height: 1.6;
+    font-size: 18px;
+    line-height: 1.7;
 }
 
 
@@ -223,12 +217,19 @@ main {
 .admin-card,
 .attendance-card {
     background: #ffffff;
-
     border: 1px solid #e5e7eb;
     border-radius: 24px;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.06);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
 
-    box-shadow:
-        0 10px 35px rgba(15, 23, 42, 0.06);
+.card:hover,
+.attendance-card:hover,
+.admin-card:hover,
+.history-card:hover {
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.09);
 }
 
 
@@ -249,7 +250,6 @@ main {
 .form-group label {
     display: block;
     margin-bottom: 9px;
-
     color: #374151;
     font-size: 15px;
     font-weight: 700;
@@ -260,22 +260,24 @@ input[type="text"],
 input[type="number"],
 select {
     width: 100%;
-
     padding: 15px 17px;
-
     border: 1px solid #dbe1e8;
     border-radius: 14px;
-
     background: #ffffff;
     color: #111827;
-
     font-size: 16px;
-
     outline: none;
-
     transition:
         border-color 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.form-control:hover,
+input[type="text"]:hover,
+input[type="number"]:hover,
+select:hover {
+    border-color: #bfdbfe;
 }
 
 .form-control:focus,
@@ -283,9 +285,8 @@ input[type="text"]:focus,
 input[type="number"]:focus,
 select:focus {
     border-color: #3b82f6;
-
-    box-shadow:
-        0 0 0 4px rgba(59, 130, 246, 0.10);
+    background: #ffffff;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.10);
 }
 
 
@@ -298,15 +299,11 @@ select:focus {
 .btn-danger,
 .btn-success {
     min-height: 50px;
-
     border: none;
     border-radius: 14px;
-
     padding: 13px 22px;
-
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
-
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease,
@@ -314,27 +311,26 @@ select:focus {
 }
 
 .btn-primary {
-    background: #2563eb;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: #ffffff;
-
-    box-shadow:
-        0 8px 18px rgba(37, 99, 235, 0.18);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.20);
 }
 
 .btn-primary:hover {
-    background: #1d4ed8;
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(37, 99, 235, 0.25);
 }
 
 .btn-secondary {
     background: #f8fafc;
     color: #111827;
-
     border: 1px solid #e2e8f0;
 }
 
 .btn-secondary:hover {
     background: #f1f5f9;
+    transform: translateY(-1px);
 }
 
 .btn-danger {
@@ -344,21 +340,25 @@ select:focus {
 
 .btn-danger:hover {
     background: #fecaca;
+    transform: translateY(-1px);
 }
 
 .btn-success {
-    background: #16a34a;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
     color: white;
+    box-shadow: 0 8px 18px rgba(22, 163, 74, 0.16);
 }
 
 .btn-success:hover {
-    background: #15803d;
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    transform: translateY(-2px);
 }
 
 button:disabled {
     opacity: 0.55;
     cursor: not-allowed;
     transform: none !important;
+    box-shadow: none !important;
 }
 
 
@@ -378,26 +378,20 @@ button:disabled {
 .scanner-card {
     max-width: 700px;
     margin: 0 auto;
-
     padding: 30px;
-
     background: #ffffff;
-
     border: 1px solid #e5e7eb;
     border-radius: 24px;
-
-    box-shadow:
-        0 10px 35px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.06);
 }
 
 #reader {
     width: 100%;
     max-width: 600px;
     margin: 0 auto;
-
     overflow: hidden;
-
     border-radius: 18px;
+    border: 1px solid #e2e8f0;
 }
 
 #reader video {
@@ -409,7 +403,6 @@ button:disabled {
     display: flex;
     justify-content: center;
     gap: 12px;
-
     margin-top: 20px;
 }
 
@@ -422,16 +415,11 @@ button:disabled {
 .success-card {
     max-width: 650px;
     margin: 0 auto;
-
     padding: 35px;
-
     background: #ffffff;
-
     border: 1px solid #e5e7eb;
     border-radius: 24px;
-
-    box-shadow:
-        0 10px 35px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.06);
 }
 
 .confirmation-title,
@@ -444,18 +432,19 @@ button:disabled {
 .success-title h2 {
     font-size: 30px;
     margin-bottom: 10px;
+    color: #111827;
 }
 
 .confirmation-title p,
 .success-title p {
     color: #64748b;
+    line-height: 1.6;
 }
 
 .info-list {
     display: flex;
     flex-direction: column;
     gap: 0;
-
     margin-bottom: 25px;
 }
 
@@ -463,11 +452,8 @@ button:disabled {
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     gap: 20px;
-
     padding: 16px 0;
-
     border-bottom: 1px solid #eef2f7;
 }
 
@@ -494,20 +480,16 @@ button:disabled {
 .success-icon {
     width: 82px;
     height: 82px;
-
     margin: 0 auto 20px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 50%;
-
     background: #dcfce7;
     color: #16a34a;
-
     font-size: 42px;
     font-weight: 800;
+    box-shadow: 0 0 0 8px rgba(34, 197, 94, 0.08);
 }
 
 .success-card {
@@ -527,20 +509,13 @@ button:disabled {
 .admin-card {
     max-width: 850px;
     margin: 0 auto;
-
     padding: 35px;
 }
 
 .admin-form {
     display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        minmax(0, 1fr)
-        auto;
-
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
     gap: 15px;
-
     align-items: end;
 }
 
@@ -550,32 +525,24 @@ button:disabled {
 
 .qr-section {
     margin-top: 35px;
-
     padding-top: 35px;
-
     border-top: 1px solid #e5e7eb;
-
     text-align: center;
 }
 
 .qr-container {
     width: 320px;
     min-height: 320px;
-
     margin: 25px auto;
-
     padding: 20px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background: white;
-
     border: 1px solid #e5e7eb;
     border-radius: 20px;
-
     overflow: hidden;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
 }
 
 .qr-container img,
@@ -586,15 +553,11 @@ button:disabled {
 
 .session-code {
     display: inline-block;
-
     margin-top: 8px;
     padding: 8px 14px;
-
     border-radius: 10px;
-
     background: #eff6ff;
     color: #2563eb;
-
     font-size: 14px;
     font-weight: 700;
 }
@@ -616,28 +579,21 @@ button:disabled {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 15px;
-
     margin-bottom: 25px;
 }
 
 .search-box {
     flex: 1;
-
     position: relative;
 }
 
 .search-box span {
     position: absolute;
-
     left: 18px;
     top: 50%;
-
     transform: translateY(-50%);
-
     font-size: 22px;
-
     pointer-events: none;
 }
 
@@ -652,52 +608,36 @@ button:disabled {
 
 .table-wrapper {
     width: 100%;
-
     overflow-x: auto;
     overflow-y: hidden;
-
     -webkit-overflow-scrolling: touch;
-
     border: 1px solid #e2e8f0;
     border-radius: 18px;
-
     background: #ffffff;
 }
 
 .table-wrapper table {
     width: 100%;
-
     min-width: 780px;
-
     border-collapse: collapse;
 }
 
 .table-wrapper th {
     padding: 17px 14px;
-
     background: #f8fafc;
-
     color: #64748b;
-
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
-
     text-align: left;
-
     white-space: nowrap;
-
     border-bottom: 1px solid #e2e8f0;
 }
 
 .table-wrapper td {
     padding: 17px 14px;
-
     color: #374151;
-
     font-size: 14px;
-
     white-space: nowrap;
-
     border-bottom: 1px solid #eef2f7;
 }
 
@@ -716,11 +656,8 @@ button:disabled {
 
 .empty-table {
     text-align: center !important;
-
     padding: 55px 20px !important;
-
     color: #64748b !important;
-
     white-space: normal !important;
 }
 
@@ -732,11 +669,8 @@ button:disabled {
 .status-badge {
     display: inline-flex;
     align-items: center;
-
     padding: 7px 12px;
-
     border-radius: 999px;
-
     font-size: 12px;
     font-weight: 700;
 }
@@ -758,13 +692,10 @@ button:disabled {
 
 .steps {
     max-width: 700px;
-
     margin: 0 auto 35px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     gap: 10px;
 }
 
@@ -772,9 +703,7 @@ button:disabled {
     display: flex;
     align-items: center;
     gap: 8px;
-
     color: #94a3b8;
-
     font-size: 13px;
     font-weight: 700;
 }
@@ -782,17 +711,12 @@ button:disabled {
 .step-number {
     width: 30px;
     height: 30px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 50%;
-
     background: #e2e8f0;
-
     color: #64748b;
-
     font-size: 13px;
 }
 
@@ -803,6 +727,7 @@ button:disabled {
 .step.active .step-number {
     background: #2563eb;
     color: white;
+    box-shadow: 0 5px 12px rgba(37, 99, 235, 0.2);
 }
 
 .step.completed {
@@ -817,7 +742,6 @@ button:disabled {
 .step-line {
     width: 50px;
     height: 2px;
-
     background: #e2e8f0;
 }
 
@@ -828,25 +752,17 @@ button:disabled {
 
 .footer {
     width: 100%;
-
     padding: 30px;
-
     border-top: 1px solid #e5e7eb;
-
     background: #ffffff;
-
     text-align: center;
-
     color: #64748b;
-
     font-size: 14px;
 }
 
 .footer span {
     display: block;
-
     margin-top: 8px;
-
     color: #94a3b8;
 }
 
@@ -866,12 +782,10 @@ button:disabled {
 
 .alert {
     padding: 14px 16px;
-
     margin-bottom: 20px;
-
     border-radius: 12px;
-
     font-size: 14px;
+    line-height: 1.5;
 }
 
 .alert-success {
@@ -940,11 +854,8 @@ button:disabled {
 
     .nav-container {
         padding: 12px 15px;
-
         flex-direction: column;
-
         align-items: stretch;
-
         gap: 12px;
     }
 
@@ -955,9 +866,7 @@ button:disabled {
     .logo-icon {
         width: 48px;
         height: 48px;
-
         border-radius: 14px;
-
         font-size: 25px;
     }
 
@@ -971,13 +880,11 @@ button:disabled {
 
     .nav-menu {
         justify-content: center;
-
         gap: 4px;
     }
 
     .nav-menu a {
         padding: 9px 12px;
-
         font-size: 14px;
     }
 
@@ -999,19 +906,16 @@ button:disabled {
 
     .hero-badge {
         padding: 9px 14px;
-
         font-size: 14px;
     }
 
     .page-heading h1 {
         font-size: 42px;
-
         letter-spacing: -1.5px;
     }
 
     .page-heading p {
         margin-top: 16px;
-
         font-size: 16px;
     }
 
@@ -1025,9 +929,7 @@ button:disabled {
     .admin-card,
     .history-card {
         width: 100%;
-
         padding: 20px;
-
         border-radius: 20px;
     }
 
@@ -1039,7 +941,6 @@ button:disabled {
     input[type="number"],
     select {
         padding: 14px;
-
         font-size: 16px;
     }
 
@@ -1051,7 +952,6 @@ button:disabled {
     .btn-danger,
     .btn-success {
         width: 100%;
-
         min-height: 50px;
     }
 
@@ -1071,9 +971,7 @@ button:disabled {
 
     .admin-form {
         display: flex;
-
         flex-direction: column;
-
         gap: 15px;
     }
 
@@ -1087,9 +985,7 @@ button:disabled {
 
     .qr-container {
         width: 100%;
-
         min-height: auto;
-
         padding: 15px;
     }
 
@@ -1105,9 +1001,7 @@ button:disabled {
 
     .history-toolbar {
         flex-direction: column;
-
         align-items: stretch;
-
         gap: 12px;
     }
 
@@ -1121,9 +1015,7 @@ button:disabled {
 
     .table-wrapper {
         width: 100%;
-
         overflow-x: auto;
-
         border-radius: 15px;
     }
 
@@ -1134,13 +1026,11 @@ button:disabled {
     .table-wrapper th,
     .table-wrapper td {
         padding: 14px 12px;
-
         font-size: 13px;
     }
 
     .empty-table {
         padding: 50px 20px !important;
-
         text-align: center !important;
     }
 
@@ -1149,20 +1039,17 @@ button:disabled {
 
     .steps {
         width: 100%;
-
         gap: 5px;
     }
 
     .step {
         font-size: 11px;
-
         gap: 5px;
     }
 
     .step-number {
         width: 27px;
         height: 27px;
-
         font-size: 11px;
     }
 
@@ -1175,7 +1062,6 @@ button:disabled {
 
     .footer {
         padding: 25px 15px;
-
         font-size: 13px;
     }
 }
@@ -1199,7 +1085,6 @@ button:disabled {
     .logo-icon {
         width: 43px;
         height: 43px;
-
         font-size: 22px;
     }
 
@@ -1209,7 +1094,6 @@ button:disabled {
 
     .nav-menu a {
         padding: 8px 9px;
-
         font-size: 12px;
     }
 
