@@ -4,21 +4,463 @@
 
 
 // ======================================================
-// ELEMENT HTML
+// ELEMENT
 // ======================================================
 
 const searchNim =
-    document.getElementById("searchNim");
+    document.getElementById(
+        "searchNim"
+    );
 
 const historyTable =
-    document.getElementById("historyTable");
+    document.getElementById(
+        "historyTable"
+    );
 
 
 // ======================================================
-// DATA RIWAYAT
+// DATA
 // ======================================================
 
 let attendanceHistory = [];
+
+
+// ======================================================
+// LOAD HISTORY
+// ======================================================
+
+async function loadHistory() {
+
+    if (!historyTable) {
+        return;
+    }
+
+
+    historyTable.innerHTML = `
+
+        <tr>
+            <td colspan="7" class="empty-table">
+                Mengambil data dari Google Sheets...
+            </td>
+        </tr>
+
+    `;
+
+
+    try {
+
+        if (
+            typeof API_URL ===
+                "undefined" ||
+
+            !API_URL
+        ) {
+
+            throw new Error(
+                "API URL belum diatur."
+            );
+        }
+
+
+        const result =
+            await getHistoryFromGoogleSheets();
+
+
+        console.log(
+            "Data riwayat:",
+            result
+        );
+
+
+        if (
+            !result ||
+            result.success !== true
+        ) {
+
+            throw new Error(
+                result &&
+                result.message
+                    ? result.message
+                    : "Gagal mengambil riwayat."
+            );
+        }
+
+
+        attendanceHistory =
+            Array.isArray(
+                result.data
+            )
+                ? result.data
+                : [];
+
+
+        displayHistory(
+            attendanceHistory
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "ERROR RIWAYAT:",
+            error
+        );
+
+
+        historyTable.innerHTML = `
+
+            <tr>
+                <td colspan="7" class="empty-table">
+                    Gagal mengambil data dari Google Sheets.
+                </td>
+            </tr>
+
+        `;
+    }
+}
+
+
+// ======================================================
+// AMBIL HISTORY GOOGLE SHEETS
+// ======================================================
+
+function getHistoryFromGoogleSheets() {
+
+    return new Promise(
+
+        function (
+            resolve,
+            reject
+        ) {
+
+            const callbackName =
+                "smartAttendanceHistory_" +
+                Date.now() +
+                "_" +
+                Math.floor(
+                    Math.random() * 10000
+                );
+
+
+            const script =
+                document.createElement(
+                    "script"
+                );
+
+
+            const timeout =
+                setTimeout(
+
+                    function () {
+
+                        cleanup();
+
+                        reject(
+                            new Error(
+                                "Timeout mengambil riwayat."
+                            )
+                        );
+
+                    },
+
+                    15000
+                );
+
+
+            function cleanup() {
+
+                clearTimeout(
+                    timeout
+                );
+
+
+                if (
+                    script.parentNode
+                ) {
+
+                    script.parentNode.removeChild(
+                        script
+                    );
+                }
+
+
+                try {
+
+                    delete window[
+                        callbackName
+                    ];
+
+                } catch (error) {
+
+                    window[
+                        callbackName
+                    ] = undefined;
+                }
+            }
+
+
+            window[
+                callbackName
+            ] = function (
+                result
+            ) {
+
+                cleanup();
+
+                resolve(
+                    result
+                );
+            };
+
+
+            script.onerror =
+                function () {
+
+                    cleanup();
+
+                    reject(
+                        new Error(
+                            "Gagal menghubungi Google Apps Script."
+                        )
+                    );
+                };
+
+
+            script.src =
+                API_URL +
+                "?action=history" +
+                "&callback=" +
+                encodeURIComponent(
+                    callbackName
+                );
+
+
+            document.body.appendChild(
+                script
+            );
+        }
+    );
+}
+
+
+// ======================================================
+// TAMPILKAN HISTORY
+// ======================================================
+
+function displayHistory(
+    data
+) {
+
+    if (!historyTable) {
+        return;
+    }
+
+
+    // ==================================================
+    // FILTER NIM
+    // ==================================================
+
+    const keyword =
+        searchNim
+            ? searchNim.value
+                .trim()
+                .toLowerCase()
+            : "";
+
+
+    let filtered =
+        data;
+
+
+    if (keyword) {
+
+        filtered =
+            data.filter(
+
+                function (
+                    item
+                ) {
+
+                    return String(
+                        item["NIM"] ||
+                        ""
+                    )
+                        .toLowerCase()
+                        .includes(
+                            keyword
+                        );
+                }
+            );
+    }
+
+
+    // ==================================================
+    // TIDAK ADA DATA
+    // ==================================================
+
+    if (
+        !filtered ||
+        filtered.length === 0
+    ) {
+
+        historyTable.innerHTML = `
+
+            <tr>
+                <td colspan="7" class="empty-table">
+                    Belum ada data presensi.
+                </td>
+            </tr>
+
+        `;
+
+        return;
+    }
+
+
+    // ==================================================
+    // BUAT TABLE
+    // ==================================================
+
+    historyTable.innerHTML =
+        filtered.map(
+
+            function (
+                item
+            ) {
+
+                const nim =
+                    item["NIM"] || "-";
+
+
+                const name =
+                    item["Nama"] || "-";
+
+
+                const course =
+                    item["Mata Kuliah"] ||
+                    "-";
+
+
+                const meeting =
+                    item["Pertemuan"] ||
+                    "-";
+
+
+                const date =
+                    item["Tanggal"] ||
+                    "-";
+
+
+                const time =
+                    item["Waktu"] ||
+                    "-";
+
+
+                const status =
+                    item["Status"] ||
+                    "Hadir";
+
+
+                return `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(nim)}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(name)}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(course)}
+                        </td>
+
+                        <td>
+                            Pertemuan
+                            ${escapeHtml(meeting)}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(date)}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(time)}
+                        </td>
+
+                        <td>
+                            <span class="status-hadir">
+                                ${escapeHtml(status)}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                `;
+            }
+        ).join("");
+}
+
+
+// ======================================================
+// ESCAPE HTML
+// ======================================================
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value
+    )
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+
+// ======================================================
+// SEARCH NIM
+// ======================================================
+
+if (searchNim) {
+
+    searchNim.addEventListener(
+
+        "input",
+
+        function () {
+
+            displayHistory(
+                attendanceHistory
+            );
+        }
+    );
+}
 
 
 // ======================================================
@@ -26,502 +468,12 @@ let attendanceHistory = [];
 // ======================================================
 
 document.addEventListener(
+
     "DOMContentLoaded",
+
     function () {
 
-        console.log(
-            "Halaman Riwayat siap digunakan."
-        );
-
         loadHistory();
+
     }
 );
-
-
-// ======================================================
-// LOAD DATA RIWAYAT
-// ======================================================
-
-async function loadHistory() {
-
-    // ==========================================
-    // MODE DEMO
-    // ==========================================
-
-    if (
-        typeof DEMO_MODE !== "undefined" &&
-        DEMO_MODE === true
-    ) {
-
-        loadDemoHistory();
-
-        return;
-    }
-
-
-    // ==========================================
-    // MODE ONLINE
-    // ==========================================
-
-    await loadOnlineHistory();
-}
-
-
-// ======================================================
-// LOAD DATA DEMO
-// ======================================================
-
-function loadDemoHistory() {
-
-    try {
-
-        let saved =
-            localStorage.getItem(
-                "attendanceHistory"
-            );
-
-
-        /*
-         * Jika ada data lama dari versi sebelumnya,
-         * ambil juga attendanceData.
-         */
-
-        if (!saved) {
-
-            const oldData =
-                localStorage.getItem(
-                    "attendanceData"
-                );
-
-            if (oldData) {
-
-                saved = oldData;
-
-                /*
-                 * Pindahkan data lama ke storage baru.
-                 */
-
-                localStorage.setItem(
-                    "attendanceHistory",
-                    oldData
-                );
-            }
-        }
-
-
-        attendanceHistory =
-            saved
-                ? JSON.parse(saved)
-                : [];
-
-
-        if (!Array.isArray(attendanceHistory)) {
-
-            attendanceHistory = [];
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Gagal membaca riwayat:",
-            error
-        );
-
-        attendanceHistory = [];
-    }
-
-
-    displayHistory(
-        attendanceHistory
-    );
-}
-
-
-// ======================================================
-// LOAD DATA GOOGLE SHEETS
-// ======================================================
-
-async function loadOnlineHistory() {
-
-    if (
-        typeof API_URL === "undefined" ||
-        !API_URL ||
-        API_URL.includes("MASUKKAN_URL")
-    ) {
-
-        console.warn(
-            "API_URL belum diatur."
-        );
-
-        displayHistory([]);
-
-        return;
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                API_URL
-            );
-
-
-        const result =
-            await response.json();
-
-
-        console.log(
-            "Data dari server:",
-            result
-        );
-
-
-        if (!result.success) {
-
-            alert(
-                result.message ||
-                "Gagal mengambil data presensi."
-            );
-
-            displayHistory([]);
-
-            return;
-        }
-
-
-        attendanceHistory =
-            result.data || [];
-
-
-        displayHistory(
-            attendanceHistory
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Gagal mengambil data:",
-            error
-        );
-
-        alert(
-            "Tidak dapat mengambil data presensi dari server."
-        );
-
-        displayHistory([]);
-    }
-}
-
-
-// ======================================================
-// TAMPILKAN DATA KE TABEL
-// ======================================================
-
-function displayHistory(data) {
-
-    if (!historyTable) {
-
-        console.error(
-            "historyTable tidak ditemukan."
-        );
-
-        return;
-    }
-
-
-    // ==========================================
-    // KOSONGKAN TABEL
-    // ==========================================
-
-    historyTable.innerHTML = "";
-
-
-    // ==========================================
-    // DATA KOSONG
-    // ==========================================
-
-    if (
-        !data ||
-        data.length === 0
-    ) {
-
-        const row =
-            document.createElement(
-                "tr"
-            );
-
-
-        const cell =
-            document.createElement(
-                "td"
-            );
-
-
-        cell.colSpan = 7;
-
-        cell.className =
-            "empty-table";
-
-        cell.textContent =
-            "Belum ada data presensi.";
-
-
-        row.appendChild(cell);
-
-        historyTable.appendChild(row);
-
-        return;
-    }
-
-
-    // ==========================================
-    // TAMPILKAN DATA
-    // ==========================================
-
-    data.forEach(
-        function (item) {
-
-            const row =
-                document.createElement(
-                    "tr"
-                );
-
-
-            // ==================================
-            // NIM
-            // ==================================
-
-            const nimCell =
-                document.createElement(
-                    "td"
-                );
-
-            nimCell.textContent =
-                item.nim || "-";
-
-
-            // ==================================
-            // NAMA
-            // ==================================
-
-            const nameCell =
-                document.createElement(
-                    "td"
-                );
-
-            nameCell.textContent =
-                item.name || "-";
-
-
-            // ==================================
-            // MATA KULIAH
-            // ==================================
-
-            const courseCell =
-                document.createElement(
-                    "td"
-                );
-
-            courseCell.textContent =
-                item.course || "-";
-
-
-            // ==================================
-            // PERTEMUAN
-            // ==================================
-
-            const meetingCell =
-                document.createElement(
-                    "td"
-                );
-
-            meetingCell.textContent =
-                item.meeting
-                    ? "Pertemuan " +
-                      item.meeting
-                    : "-";
-
-
-            // ==================================
-            // TANGGAL
-            // ==================================
-
-            const dateCell =
-                document.createElement(
-                    "td"
-                );
-
-            dateCell.textContent =
-                item.date || "-";
-
-
-            // ==================================
-            // WAKTU
-            // ==================================
-
-            const timeCell =
-                document.createElement(
-                    "td"
-                );
-
-            timeCell.textContent =
-                item.time || "-";
-
-
-            // ==================================
-            // STATUS
-            // ==================================
-
-            const statusCell =
-                document.createElement(
-                    "td"
-                );
-
-
-            const statusBadge =
-                document.createElement(
-                    "span"
-                );
-
-
-            statusBadge.className =
-                "status-badge";
-
-
-            statusBadge.textContent =
-                item.status || "Hadir";
-
-
-            statusCell.appendChild(
-                statusBadge
-            );
-
-
-            // ==================================
-            // MASUKKAN CELL
-            // ==================================
-
-            row.appendChild(
-                nimCell
-            );
-
-            row.appendChild(
-                nameCell
-            );
-
-            row.appendChild(
-                courseCell
-            );
-
-            row.appendChild(
-                meetingCell
-            );
-
-            row.appendChild(
-                dateCell
-            );
-
-            row.appendChild(
-                timeCell
-            );
-
-            row.appendChild(
-                statusCell
-            );
-
-
-            // ==================================
-            // MASUKKAN ROW
-            // ==================================
-
-            historyTable.appendChild(
-                row
-            );
-        }
-    );
-}
-
-
-// ======================================================
-// PENCARIAN NIM
-// ======================================================
-
-if (searchNim) {
-
-    searchNim.addEventListener(
-        "input",
-        searchHistory
-    );
-}
-
-
-// ======================================================
-// SEARCH
-// ======================================================
-
-function searchHistory() {
-
-    const keyword =
-        searchNim.value
-            .trim()
-            .toLowerCase();
-
-
-    // ==========================================
-    // KOSONG
-    // ==========================================
-
-    if (keyword === "") {
-
-        displayHistory(
-            attendanceHistory
-        );
-
-        return;
-    }
-
-
-    // ==========================================
-    // FILTER
-    // ==========================================
-
-    const filtered =
-        attendanceHistory.filter(
-            function (item) {
-
-                const nim =
-                    String(
-                        item.nim || ""
-                    ).toLowerCase();
-
-
-                const name =
-                    String(
-                        item.name || ""
-                    ).toLowerCase();
-
-
-                const course =
-                    String(
-                        item.course || ""
-                    ).toLowerCase();
-
-
-                return (
-                    nim.includes(keyword) ||
-                    name.includes(keyword) ||
-                    course.includes(keyword)
-                );
-            }
-        );
-
-
-    // ==========================================
-    // TAMPILKAN HASIL
-    // ==========================================
-
-    displayHistory(
-        filtered
-    );
-}
