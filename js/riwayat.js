@@ -8,14 +8,10 @@
 // ======================================================
 
 const searchNim =
-    document.getElementById(
-        "searchNim"
-    );
+    document.getElementById("searchNim");
 
 const historyTable =
-    document.getElementById(
-        "historyTable"
-    );
+    document.getElementById("historyTable");
 
 
 // ======================================================
@@ -35,48 +31,37 @@ async function loadHistory() {
         return;
     }
 
-
     historyTable.innerHTML = `
-
         <tr>
             <td colspan="7" class="empty-table">
                 Mengambil data dari Google Sheets...
             </td>
         </tr>
-
     `;
-
 
     try {
 
         if (
-            typeof API_URL ===
-                "undefined" ||
-
+            typeof API_URL === "undefined" ||
             !API_URL
         ) {
-
             throw new Error(
                 "API URL belum diatur."
             );
         }
 
-
         const result =
             await getHistoryFromGoogleSheets();
-
 
         console.log(
             "Data riwayat:",
             result
         );
 
-
         if (
             !result ||
             result.success !== true
         ) {
-
             throw new Error(
                 result &&
                 result.message
@@ -85,19 +70,14 @@ async function loadHistory() {
             );
         }
 
-
         attendanceHistory =
-            Array.isArray(
-                result.data
-            )
+            Array.isArray(result.data)
                 ? result.data
                 : [];
-
 
         displayHistory(
             attendanceHistory
         );
-
 
     } catch (error) {
 
@@ -106,15 +86,12 @@ async function loadHistory() {
             error
         );
 
-
         historyTable.innerHTML = `
-
             <tr>
                 <td colspan="7" class="empty-table">
                     Gagal mengambil data dari Google Sheets.
                 </td>
             </tr>
-
         `;
     }
 }
@@ -127,7 +104,6 @@ async function loadHistory() {
 function getHistoryFromGoogleSheets() {
 
     return new Promise(
-
         function (
             resolve,
             reject
@@ -141,16 +117,11 @@ function getHistoryFromGoogleSheets() {
                     Math.random() * 10000
                 );
 
-
             const script =
-                document.createElement(
-                    "script"
-                );
-
+                document.createElement("script");
 
             const timeout =
                 setTimeout(
-
                     function () {
 
                         cleanup();
@@ -162,7 +133,6 @@ function getHistoryFromGoogleSheets() {
                         );
 
                     },
-
                     15000
                 );
 
@@ -173,7 +143,6 @@ function getHistoryFromGoogleSheets() {
                     timeout
                 );
 
-
                 if (
                     script.parentNode
                 ) {
@@ -182,7 +151,6 @@ function getHistoryFromGoogleSheets() {
                         script
                     );
                 }
-
 
                 try {
 
@@ -276,14 +244,12 @@ function displayHistory(
 
         filtered =
             data.filter(
-
                 function (
                     item
                 ) {
 
                     return String(
-                        item["NIM"] ||
-                        ""
+                        item.nim || ""
                     )
                         .toLowerCase()
                         .includes(
@@ -304,13 +270,11 @@ function displayHistory(
     ) {
 
         historyTable.innerHTML = `
-
             <tr>
                 <td colspan="7" class="empty-table">
                     Belum ada data presensi.
                 </td>
             </tr>
-
         `;
 
         return;
@@ -323,46 +287,34 @@ function displayHistory(
 
     historyTable.innerHTML =
         filtered.map(
-
             function (
                 item
             ) {
 
+                // Data dari Apps Script
                 const nim =
-                    item["NIM"] || "-";
-
+                    item.nim || "-";
 
                 const name =
-                    item["Nama"] || "-";
-
+                    item.name || "-";
 
                 const course =
-                    item["Mata Kuliah"] ||
-                    "-";
-
+                    item.course || "-";
 
                 const meeting =
-                    item["Pertemuan"] ||
-                    "-";
-
+                    item.meeting || "-";
 
                 const date =
-                    item["Tanggal"] ||
-                    "-";
-
+                    item.date || "-";
 
                 const time =
-                    item["Waktu"] ||
-                    "-";
-
+                    item.time || "-";
 
                 const status =
-                    item["Status"] ||
-                    "Hadir";
+                    item.status || "Hadir";
 
 
                 return `
-
                     <tr>
 
                         <td>
@@ -397,7 +349,6 @@ function displayHistory(
                         </td>
 
                     </tr>
-
                 `;
             }
         ).join("");
@@ -412,9 +363,7 @@ function escapeHtml(
     value
 ) {
 
-    return String(
-        value
-    )
+    return String(value)
 
         .replace(
             /&/g,
@@ -450,14 +399,13 @@ function escapeHtml(
 if (searchNim) {
 
     searchNim.addEventListener(
-
         "input",
-
         function () {
 
             displayHistory(
                 attendanceHistory
             );
+
         }
     );
 }
@@ -468,9 +416,7 @@ if (searchNim) {
 // ======================================================
 
 document.addEventListener(
-
     "DOMContentLoaded",
-
     function () {
 
         loadHistory();
