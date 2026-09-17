@@ -15,6 +15,9 @@
 
     <!-- ================= QR GENERATOR ================= -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <!-- ================= GOOGLE IDENTITY SERVICES ================= -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 
@@ -138,7 +141,7 @@
                         </h2>
 
                         <p>
-                            Aktifkan profil Anda sebelum melakukan presensi
+                            Login menggunakan akun Google Anda
                         </p>
 
                     </div>
@@ -163,7 +166,7 @@
                         </div>
 
                         <span>
-                            Aktifkan Profil
+                            Login Google
                         </span>
 
                     </div>
@@ -209,11 +212,11 @@
 
 
                 <!-- ================================================= -->
-                <!-- STEP 1 : AKTIFKAN PROFIL -->
+                <!-- STEP 1 : LOGIN GOOGLE -->
                 <!-- ================================================= -->
 
                 <div
-                    id="nimSection"
+                    id="loginSection"
                     class="form-section"
                 >
 
@@ -222,11 +225,11 @@
                         <div>
 
                             <h3>
-                                👤 Aktifkan Profil Mahasiswa
+                                👤 Login Mahasiswa
                             </h3>
 
                             <p>
-                                Aktifkan profil Anda sebelum melakukan presensi.
+                                Gunakan akun Google yang terdaftar pada sistem.
                             </p>
 
                         </div>
@@ -234,55 +237,82 @@
                     </div>
 
 
-                    <!-- LABEL NIM -->
+                    <!-- GOOGLE LOGIN -->
 
-                    <label for="nimInput">
-                        Nomor Induk Mahasiswa
-                    </label>
-
-
-                    <!-- INPUT NIM -->
-
-                    <div class="input-wrapper">
-
-                        <span class="input-icon">
-                            🎓
-                        </span>
-
-
-                        <input
-                            type="text"
-                            id="nimInput"
-                            placeholder="Contoh: 230101001"
-                            autocomplete="off"
-                        >
-
+                    <div
+                        id="googleLoginButton"
+                        style="display:flex; justify-content:center; margin:25px 0;"
+                    >
                     </div>
 
 
-                    <!-- KETERANGAN -->
+                    <!-- INFORMASI LOGIN -->
 
-                    <p class="input-help">
-                        NIM hanya diperlukan saat mengaktifkan profil
-                        pada perangkat ini.
+                    <p class="input-help" style="text-align:center;">
+                        Sistem akan mengenali data mahasiswa
+                        berdasarkan email akun Google Anda.
                     </p>
 
 
-                    <!-- BUTTON AKTIFKAN -->
+                    <!-- DATA USER SETELAH LOGIN -->
 
-                    <button
-                        type="button"
-                        id="continueBtn"
-                        class="btn-primary"
+                    <div
+                        id="studentInfo"
+                        class="confirmation-box hidden"
                     >
 
-                        Aktifkan Profil
+                        <div class="info-row">
 
-                        <span>
-                            →
-                        </span>
+                            <span>
+                                Nama
+                            </span>
 
-                    </button>
+                            <strong id="loginName">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <span>
+                                NIM
+                            </span>
+
+                            <strong id="loginNim">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <span>
+                                Kelas
+                            </span>
+
+                            <strong id="loginClass">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <span>
+                                Email
+                            </span>
+
+                            <strong id="loginEmail">
+                                -
+                            </strong>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
@@ -391,6 +421,36 @@
                             </span>
 
                             <strong id="confirmNim">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <!-- KELAS -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Kelas
+                            </span>
+
+                            <strong id="confirmClass">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <!-- EMAIL -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Email
+                            </span>
+
+                            <strong id="confirmEmail">
                                 -
                             </strong>
 
@@ -543,6 +603,38 @@
                             </span>
 
                             <strong id="successName">
+                                -
+                            </strong>
+
+                        </div>
+
+
+
+                        <!-- KELAS -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Kelas
+                            </span>
+
+                            <strong id="successClass">
+                                -
+                            </strong>
+
+                        </div>
+
+
+
+                        <!-- EMAIL -->
+
+                        <div class="info-row">
+
+                            <span>
+                                Email
+                            </span>
+
+                            <strong id="successEmail">
                                 -
                             </strong>
 
